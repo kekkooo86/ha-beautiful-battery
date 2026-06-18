@@ -1,0 +1,21 @@
+{
+  "name": "beautiful-battery",
+  "version": "0.1.0",
+  "description": "Home Assistant Lovelace card — 3D liquid glass battery visualization",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "dev:serve": "vite --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "lit": "^3.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.0"
+  }
+}
