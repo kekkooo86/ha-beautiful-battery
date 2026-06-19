@@ -777,7 +777,7 @@ class BeautifulBatteryCard extends LitElement {
                     `}
                   </div>
                   <div class="battery-cap"
-                       style="width:${bodyW}px; height:${capH}px;">
+                       style="width:${capW}px; height:${capH}px;">
                     <div class="battery-cap-inner"></div>
                   </div>
                   <div class="battery-body"
@@ -948,7 +948,7 @@ class BeautifulBatteryCard extends LitElement {
                   </div>
 
                   <div class="battery-cap"
-                       style="width:${bodyW}px; height:${capH}px;">
+                       style="width:${capW}px; height:${capH}px;">
                     <div class="battery-cap-inner"></div>
                   </div>
 
