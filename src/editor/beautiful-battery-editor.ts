@@ -34,6 +34,7 @@ const STRINGS: Record<string, Record<string, string>> = {
     display_name: 'Nome visualizzato',
     appearance: 'Aspetto',
     size: 'Dimensione',
+    size_tiny: 'Minuscolo (100px)',
     size_small: 'Piccolo (140px)',
     size_medium: 'Medio (200px)',
     size_large: 'Grande (260px)',
@@ -76,6 +77,7 @@ const STRINGS: Record<string, Record<string, string>> = {
     display_name: 'Display name',
     appearance: 'Appearance',
     size: 'Size',
+    size_tiny: 'Tiny (100px)',
     size_small: 'Small (140px)',
     size_medium: 'Medium (200px)',
     size_large: 'Large (260px)',
@@ -254,6 +256,7 @@ class BeautifulBatteryEditor extends LitElement {
             <label class="field-label">${this._t('size')}</label>
             <select .value=${this._config.size}
                     @change=${(e: Event) => this._update('size', (e.target as HTMLSelectElement).value)}>
+              <option value="tiny">${this._t('size_tiny')}</option>
               <option value="small">${this._t('size_small')}</option>
               <option value="medium">${this._t('size_medium')}</option>
               <option value="large">${this._t('size_large')}</option>

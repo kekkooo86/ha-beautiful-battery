@@ -25,7 +25,7 @@ export interface BatteryConfig {
     high: string;
     full: string;
   };
-  size: 'small' | 'medium' | 'large';
+  size: 'tiny' | 'small' | 'medium' | 'large';
   glow_intensity: number;
   tap_action: TapAction;
   language: 'auto' | 'it' | 'en';

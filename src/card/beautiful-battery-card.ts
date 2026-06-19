@@ -32,7 +32,7 @@ const DEFAULT_CONFIG: BatteryConfig = {
   power_entity: '',
 };
 
-const SIZE_MAP = { small: 140, medium: 200, large: 260 };
+const SIZE_MAP = { tiny: 100, small: 140, medium: 200, large: 260 };
 
 const STRINGS: Record<string, { charging: string; discharging: string; idle: string; full: string; empty: string }> = {
   it: { charging: 'In carica', discharging: 'In scarica', idle: 'Inattiva', full: 'Piena', empty: 'Vuota' },
