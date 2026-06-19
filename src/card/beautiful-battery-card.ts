@@ -856,6 +856,10 @@ class BeautifulBatteryCard extends LitElement {
     ].filter(Boolean).join(' ');
 
     const totalH = bodyH + capH;
+    const capLeft = ((bodyW - capW) / 2 / bodyW * 100).toFixed(1);
+    const capRight = ((bodyW + capW) / 2 / bodyW * 100).toFixed(1);
+    const capBottom = (capH / totalH * 100).toFixed(1);
+    const shellClip = `polygon(${capLeft}% 0%, ${capRight}% 0%, ${capRight}% ${capBottom}%, 100% ${capBottom}%, 100% 100%, 0% 100%, 0% ${capBottom}%, ${capLeft}% ${capBottom}%)`;
 
     return html`
       <ha-card>
@@ -881,11 +885,11 @@ class BeautifulBatteryCard extends LitElement {
               <div>
                 <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px;">
                   <div class="charge-glow"
-                       style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
+                       style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color}; clip-path: ${shellClip};">
                   </div>
 
                   <div class="${fillClasses}"
-                       style="height: ${pct}%; background: ${fillBg};">
+                       style="height: ${pct}%; background: ${fillBg}; clip-path: ${shellClip};">
                     ${liquidOn ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
