@@ -744,6 +744,8 @@ class BeautifulBatteryCard extends LitElement {
     const color = this._getColor();
     const glowIntensity = clamp(this._config?.glow_intensity ?? 0.8, 0, 1);
 
+    const totalH = bodyH + capH;
+
     return html`
       <ha-card>
         <div class="battery-wrapper ${!this._anim('float') ? 'no-float' : ''}">
@@ -751,35 +753,35 @@ class BeautifulBatteryCard extends LitElement {
             <div class="drops-area">
               <div class="drops-above"></div>
               <div>
-                <div class="battery-shell" style="width:${bodyW}px;">
+                <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px;">
+                  <div class="charge-glow"
+                       style="height: 50%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
+                  </div>
+                  <div class="charge-fill"
+                       style="height: 50%; background: linear-gradient(0deg, ${color}, ${color}ee);">
+                    ${this._anim('liquid_movement') ? html`
+                      <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                           style="fill: ${color};">
+                        <path d="${this._wavePath()}">
+                          <animate attributeName="d"
+                                   values="${this._wavePath()};${this._wavePath(1)};${this._wavePath()}"
+                                   dur="3s"
+                                   repeatCount="indefinite" />
+                        </path>
+                      </svg>
+                    ` : html`
+                      <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                           style="fill: ${color};">
+                        <path d="${this._wavePath()}" />
+                      </svg>
+                    `}
+                  </div>
                   <div class="battery-cap"
                        style="width:${bodyW}px; height:${capH}px;">
                     <div class="battery-cap-inner"></div>
                   </div>
                   <div class="battery-body"
                        style="width:${bodyW}px; height:${bodyH}px;">
-                    <div class="charge-glow"
-                         style="height: 50%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
-                    </div>
-                    <div class="charge-fill"
-                         style="height: 50%; background: linear-gradient(0deg, ${color}, ${color}ee);">
-                      ${this._anim('liquid_movement') ? html`
-                        <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
-                             style="fill: ${color};">
-                          <path d="${this._wavePath()}">
-                            <animate attributeName="d"
-                                     values="${this._wavePath()};${this._wavePath(1)};${this._wavePath()}"
-                                     dur="3s"
-                                     repeatCount="indefinite" />
-                          </path>
-                        </svg>
-                      ` : html`
-                        <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
-                             style="fill: ${color};">
-                          <path d="${this._wavePath()}" />
-                        </svg>
-                      `}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -877,20 +879,13 @@ class BeautifulBatteryCard extends LitElement {
               </div>
 
               <div>
-                <div class="battery-shell" style="width:${bodyW}px;">
-                  <div class="battery-cap"
-                       style="width:${bodyW}px; height:${capH}px;">
-                    <div class="battery-cap-inner"></div>
+                <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px;">
+                  <div class="charge-glow"
+                       style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
                   </div>
 
-                  <div class="${bodyClasses}"
-                       style="width:${bodyW}px; height:${bodyH}px;">
-                    <div class="charge-glow"
-                         style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
-                    </div>
-
-                    <div class="${fillClasses}"
-                         style="height: ${pct}%; background: ${fillBg};">
+                  <div class="${fillClasses}"
+                       style="height: ${pct}%; background: ${fillBg};">
                     ${liquidOn ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
@@ -950,6 +945,15 @@ class BeautifulBatteryCard extends LitElement {
                         animation-delay: ${s.delay}s;
                       "></div>
                     `) : nothing}
+                  </div>
+
+                  <div class="battery-cap"
+                       style="width:${bodyW}px; height:${capH}px;">
+                    <div class="battery-cap-inner"></div>
+                  </div>
+
+                  <div class="${bodyClasses}"
+                       style="width:${bodyW}px; height:${bodyH}px;">
                   </div>
                 </div>
               </div>
