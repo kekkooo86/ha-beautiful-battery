@@ -232,7 +232,6 @@ const Ut="modulepreload",Lt=function(e){return"/"+e},nt={},Rt=function(t,i,s){le
       align-items: center;
       justify-content: center;
       gap: 0;
-      padding: 20px;
       perspective: 800px;
       cursor: pointer;
       user-select: none;
