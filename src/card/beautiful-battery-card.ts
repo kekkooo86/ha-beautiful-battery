@@ -208,10 +208,8 @@ class BeautifulBatteryCard extends LitElement {
       );
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-bottom: none;
+      border: none;
       box-shadow:
-          0 -2px 8px rgba(0, 0, 0, 0.15),
           inset 0 1px 0 rgba(255, 255, 255, 0.2);
       position: relative;
       z-index: 3;
@@ -527,7 +525,6 @@ class BeautifulBatteryCard extends LitElement {
 
     :host(.light-theme) .battery-cap-inner {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.4);
     }
 
     :host(.light-theme) .battery-shell::before {
@@ -887,13 +884,13 @@ class BeautifulBatteryCard extends LitElement {
               </div>
 
               <div>
-                <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px;">
+                <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px; clip-path: ${shellClip};">
                   <div class="charge-glow"
-                       style="transform: translateY(${100 - pct}%); background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color}; clip-path: ${shellClip};">
+                       style="transform: translateY(${100 - pct}%); background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
                   </div>
 
                   <div class="${fillClasses}"
-                       style="transform: translateY(${100 - pct}%); background: ${fillBg}; clip-path: ${shellClip};">
+                       style="transform: translateY(${100 - pct}%); background: ${fillBg};">
                     ${liquidOn ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
