@@ -57,7 +57,7 @@ function lerpColor(a: string, b: string, t: number): string {
 function chargeColor(pct: number, colors: BatteryConfig['charge_colors']): string {
   if (pct < 25) return lerpColor(colors.low, colors.mid, pct / 25);
   if (pct < 50) return lerpColor(colors.mid, colors.high, (pct - 25) / 25);
-  if (pct < 85) return lerpColor(colors.high, colors.full, (pct - 50) / 35);
+  if (pct < 75) return lerpColor(colors.high, colors.full, (pct - 50) / 25);
   return colors.full;
 }
 
