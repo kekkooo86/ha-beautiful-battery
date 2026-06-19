@@ -53,7 +53,9 @@ const STRINGS: Record<string, Record<string, string>> = {
     tap_action: 'Azione al tocco',
     tap_more: 'Piu info',
     tap_toggle: 'Toggle',
+    tap_navigate: 'Naviga',
     tap_none: 'Nessuna',
+    navigation_path: 'Percorso navigazione',
     test_override: 'Override test percentuale',
     test_off: 'Disabilitato (usa entita)',
     test_reset: 'Reset',
@@ -96,7 +98,9 @@ const STRINGS: Record<string, Record<string, string>> = {
     tap_action: 'Tap action',
     tap_more: 'More Info',
     tap_toggle: 'Toggle',
+    tap_navigate: 'Navigate',
     tap_none: 'None',
+    navigation_path: 'Navigation path',
     test_override: 'Test percentage override',
     test_off: 'Disabled (using entity)',
     test_reset: 'Reset',
@@ -217,6 +221,27 @@ class BeautifulBatteryEditor extends LitElement {
     const merged = { ...DEFAULT_EDITOR_CONFIG, ...config } as BatteryConfig;
     merged.animations = { ...DEFAULT_ANIMATIONS, ...(config.animations as Partial<AnimationConfig> ?? {}) };
     this._config = merged;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._dispatchPreview(null, null);
+  }
+
+  private _dispatchPreview(percent: number | null, state: string | null) {
+    window.dispatchEvent(new CustomEvent('beautiful-battery-preview', {
+      detail: {
+        entity: this._config.entity,
+        percent,
+        state,
+      },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  private _updateCardPreview() {
+    this._dispatchPreview(this._config.test_override, this._config.test_state);
   }
 
   private _t(key: string): string {
@@ -347,9 +372,18 @@ class BeautifulBatteryEditor extends LitElement {
                     @change=${(e: Event) => this._updateTapAction((e.target as HTMLSelectElement).value)}>
               <option value="more-info">${this._t('tap_more')}</option>
               <option value="toggle">${this._t('tap_toggle')}</option>
+              <option value="navigate">${this._t('tap_navigate')}</option>
               <option value="none">${this._t('tap_none')}</option>
             </select>
           </div>
+          ${this._config.tap_action.action === 'navigate' ? html`
+            <div class="field">
+              <label class="field-label">${this._t('navigation_path')}</label>
+              <input type="text" .value=${this._config.tap_action.navigation_path ?? ''}
+                     placeholder="#energia"
+                     @input=${(e: Event) => this._updateTapActionField('navigation_path', (e.target as HTMLInputElement).value)} />
+            </div>
+          ` : ''}
         </section>
 
         <section class="section">
@@ -413,19 +447,30 @@ class BeautifulBatteryEditor extends LitElement {
     `;
   }
 
+  private _dispatchConfig() {
+    const config = { ...this._config, test_override: null, test_state: null };
+    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config }, bubbles: true, composed: true }));
+  }
+
   private _update(key: string, value: unknown) {
     this._config = { ...this._config, [key]: value };
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
+    this._dispatchConfig();
+    this._updateCardPreview();
   }
 
   private _updateColor(key: string, value: string) {
     this._config = { ...this._config, charge_colors: { ...this._config.charge_colors, [key]: value } };
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
+    this._dispatchConfig();
   }
 
   private _updateTapAction(action: string) {
     this._config = { ...this._config, tap_action: { action: action as BatteryConfig['tap_action']['action'] } };
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
+    this._dispatchConfig();
+  }
+
+  private _updateTapActionField(key: string, value: string) {
+    this._config = { ...this._config, tap_action: { ...this._config.tap_action, [key]: value } };
+    this._dispatchConfig();
   }
 
   private _renderAnimToggle(key: keyof AnimationConfig, labelKey: string) {
@@ -444,6 +489,6 @@ class BeautifulBatteryEditor extends LitElement {
       ...this._config,
       animations: { ...this._config.animations, [key]: value },
     };
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
+    this._dispatchConfig();
   }
 }

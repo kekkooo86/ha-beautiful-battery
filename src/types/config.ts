@@ -1,8 +1,9 @@
 export interface TapAction {
-  action: 'more-info' | 'toggle' | 'call-service' | 'none';
+  action: 'more-info' | 'toggle' | 'call-service' | 'navigate' | 'none';
   service?: string;
   service_data?: Record<string, unknown>;
   target?: { entity_id?: string; device_id?: string; area_id?: string };
+  navigation_path?: string;
 }
 
 export interface AnimationConfig {

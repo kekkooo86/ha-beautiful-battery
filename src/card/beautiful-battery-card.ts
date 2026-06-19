@@ -547,6 +547,7 @@ class BeautifulBatteryCard extends LitElement {
   @state() private _mouseActive = false;
   @state() private _isDark = true;
   @state() private _initialized = false;
+  @state() private _previewActive = false;
   private _particles: Array<{ x: number; y: number; size: number; dur: number; delay: number }> = [];
   private _sparks: Array<{ x: number; y: number; size: number; delay: number }> = [];
   private _convectionPaths: Array<{ d: string; delay: number }> = [];
@@ -567,6 +568,39 @@ class BeautifulBatteryCard extends LitElement {
     this._syncState();
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('beautiful-battery-preview', this._onPreviewEvent as EventListener);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('beautiful-battery-preview', this._onPreviewEvent as EventListener);
+    super.disconnectedCallback();
+  }
+
+  private _onPreviewEvent = (e: CustomEvent) => {
+    if (e.detail?.entity && e.detail.entity !== this._config?.entity) return;
+    this.setPreviewOverrides(e.detail?.percent ?? null, e.detail?.state ?? null);
+  };
+
+  setPreviewOverrides(percent?: number | null, state?: string | null) {
+    this._previewActive = percent != null || state != null;
+    if (this._previewActive) {
+      if (percent != null) this._chargePercent = clamp(percent, 0, 100);
+      if (state != null) {
+        this._batteryState = state as 'charging' | 'discharging' | 'idle';
+        this._isCharging = state === 'charging';
+      }
+      this._displayPercent = this._chargePercent;
+      this._generateParticles();
+      this._generateSparks();
+      this._generateConvection();
+    } else {
+      if (this._config) this._syncState();
+    }
+    this.requestUpdate();
+  }
+
   private _anim(key: keyof AnimationConfig): boolean {
     return this._config?.animations?.[key] ?? DEFAULT_ANIMATIONS[key];
   }
@@ -584,6 +618,8 @@ class BeautifulBatteryCard extends LitElement {
     if (!this.hass || !this._config?.entity) return;
     const entity = this.hass.states[this._config.entity];
     if (!entity) return;
+
+    if (this._previewActive) return;
 
     if (this._config.test_override != null) {
       this._chargePercent = clamp(this._config.test_override, 0, 100);
@@ -733,6 +769,12 @@ class BeautifulBatteryCard extends LitElement {
           this.hass.callService?.(domain, service, action.service_data, action.target);
         }
         break;
+      case 'navigate':
+        if (action.navigation_path) {
+          history.pushState(null, '', action.navigation_path);
+          window.dispatchEvent(new Event('location-changed'));
+        }
+        break;
     }
   }
 
@@ -857,10 +899,12 @@ class BeautifulBatteryCard extends LitElement {
     ].filter(Boolean).join(' ');
 
     const totalH = bodyH + capH;
-    const capLeft = ((bodyW - capW) / 2 / bodyW * 100).toFixed(1);
-    const capRight = ((bodyW + capW) / 2 / bodyW * 100).toFixed(1);
-    const capBottom = (capH / totalH * 100).toFixed(1);
-    const shellClip = `polygon(${capLeft}% 0%, ${capRight}% 0%, ${capRight}% ${capBottom}%, 100% ${capBottom}%, 100% 100%, 0% 100%, 0% ${capBottom}%, ${capLeft}% ${capBottom}%)`;
+    const capLx = (bodyW - capW) / 2;
+    const capRx = (bodyW + capW) / 2;
+    const rT = 6;
+    const rS = 6;
+    const rB = 16;
+    const shellClip = `path("M ${capLx + rT} 0 L ${capRx - rT} 0 Q ${capRx} 0 ${capRx} ${rT} L ${capRx} ${capH} L ${bodyW - rS} ${capH} Q ${bodyW} ${capH} ${bodyW} ${capH + rS} L ${bodyW} ${totalH - rB} Q ${bodyW} ${totalH} ${bodyW - rB} ${totalH} L ${rB} ${totalH} Q 0 ${totalH} 0 ${totalH - rB} L 0 ${capH + rS} Q 0 ${capH} ${rS} ${capH} L ${capLx} ${capH} L ${capLx} ${rT} Q ${capLx} 0 ${capLx + rT} 0 Z")`;
 
     return html`
       <ha-card>
