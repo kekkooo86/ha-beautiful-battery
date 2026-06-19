@@ -1,0 +1,19 @@
+type: custom:beautiful-battery
+entity: sensor.reserva_stato_di_carica
+theme: liquid-glass
+show_percentage: true
+show_voltage: true
+show_power: true
+show_status: true
+show_particles: true
+charge_colors:
+  low: "#ff4444"
+  mid: "#ffaa00"
+  high: "#44cc44"
+  full: "#00ddff"
+size: large
+glow_intensity: 0.8
+tap_action:
+  action: more-info
+language: auto
+test_override: null

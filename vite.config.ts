@@ -9,6 +9,7 @@ export default defineConfig({
       output: {
         entryFileNames: 'beautiful-battery.js',
         format: 'es',
+        inlineDynamicImports: true,
       },
     },
     target: 'es2022',

@@ -10,4 +10,6 @@ export interface HomeAssistant {
   states: Record<string, HassEntity>;
   locale?: { language: string };
   themes?: { darkMode?: boolean };
+  language: string;
+  callService?: (domain: string, service: string, serviceData?: Record<string, unknown>, target?: Record<string, unknown>) => Promise<void>;
 }

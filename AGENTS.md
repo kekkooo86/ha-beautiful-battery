@@ -120,18 +120,22 @@ Registers the card in `window.customCards` for HA card picker.
 - [x] 3 sizes (small/medium/large)
 - [x] Visual editor (entity picker, toggles, color pickers, sliders)
 - [x] Typecheck + build pass
+- [x] **3D rotation on mouse move** — pointer tracking, rotateX/Y based on cursor
+- [x] **Charge level particles** — floating bubbles in liquid fill
+- [x] **Tap actions** — more-info, toggle, call-service (default: more-info)
+- [x] **Dark/light theme detection** — auto-adjust glass/text colors via hass.themes.darkMode
+- [x] **Charge animation** — animated fill from 0 to current level on first load
+- [x] **I18n** — Italian + English labels (charging, discharging, full, empty)
+- [x] **Solid theme variant** — non-glass fallback for compatibility
+- [x] **Drop animation** — discrete SVG drops: fall-in when charging, drain-out when discharging
 
 ### TODO — Next Session Priorities
-- [ ] **3D rotation on mouse move** — track pointer position, apply `rotateX/Y` based on cursor
-- [ ] **Charge level particles** — floating bubbles/particles inside the charge fill
-- [ ] **Tap actions** — `more-info`, `toggle`, `call-service` support
-- [ ] **Dark/light theme detection** — auto-adjust glass opacity and text colors
 - [ ] **Multi-cell battery mode** — show multiple cells side by side (e.g. 4-cell pack)
-- [ ] **Charge animation** — animated fill from 0 to current level on first load
-- [ ] **I18n** — Italian + English strings
 - [ ] **HA theme integration** — use `var(--primary-color)` etc.
 - [ ] **Responsive sizing** — auto-scale based on card width
-- [ ] **Solid theme variant** — non-glass fallback for compatibility
+- [ ] **Editor polish** — call-service tap_action config fields, better entity search
+- [ ] **Haptic feedback** — vibration on tap for mobile
+- [ ] **Custom CSS variables** — expose accent color for dashboard integration
 
 ## Design Vision
 
