@@ -202,17 +202,17 @@ class BeautifulBatteryCard extends LitElement {
       height: 100%;
       border-radius: 6px 6px 0 0;
       background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.08) 100%
+          180deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0.08) 100%
       );
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-bottom: none;
       box-shadow:
-        0 -2px 8px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          0 -2px 8px rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
       position: relative;
       z-index: 3;
     }
@@ -222,18 +222,18 @@ class BeautifulBatteryCard extends LitElement {
       overflow: hidden;
       border-radius: 6px 6px 16px 16px;
       background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12) 0%,
-        rgba(255, 255, 255, 0.05) 40%,
-        rgba(0, 0, 0, 0.1) 100%
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 255, 255, 0.05) 40%,
+          rgba(0, 0, 0, 0.1) 100%
       );
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+          0 8px 32px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1);
     }
 
     .battery-shell::before {
@@ -244,9 +244,9 @@ class BeautifulBatteryCard extends LitElement {
       right: 0;
       height: 40%;
       background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.0) 100%
+          180deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.0) 100%
       );
       border-radius: 6px 6px 0 0;
       pointer-events: none;
@@ -276,6 +276,7 @@ class BeautifulBatteryCard extends LitElement {
       bottom: 0;
       left: 0;
       right: 0;
+      height: 100%;
       border-radius: 0 0 16px 16px;
       pointer-events: none;
       z-index: 0;
@@ -286,10 +287,13 @@ class BeautifulBatteryCard extends LitElement {
       bottom: 0;
       left: 0;
       right: 0;
+      height: 100%;
       border-radius: 0 0 14px 14px;
-      transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  background 0.8s ease;
+      transform-origin: bottom center;
+      transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.8s ease;
       z-index: 1;
+      will-change: transform;
     }
 
     .charge-fill.no-transition {
@@ -297,8 +301,8 @@ class BeautifulBatteryCard extends LitElement {
     }
 
     .charge-fill.animating {
-      transition: height 2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  background 0.8s ease;
+      transition: transform 2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.8s ease;
     }
 
     .charge-fill.breathing {
@@ -318,9 +322,9 @@ class BeautifulBatteryCard extends LitElement {
       right: 0;
       height: 20px;
       background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.35) 0%,
-        rgba(255, 255, 255, 0.0) 100%
+          180deg,
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.0) 100%
       );
       pointer-events: none;
     }
@@ -435,8 +439,8 @@ class BeautifulBatteryCard extends LitElement {
     }
 
     @keyframes bb-breathe {
-      0%, 100% { transform: scaleX(1); }
-      50% { transform: scaleX(0.97); }
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.08); }
     }
 
     @keyframes bb-gradient-flow {
@@ -497,16 +501,16 @@ class BeautifulBatteryCard extends LitElement {
 
     :host(.light-theme) .battery-shell {
       background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.65) 0%,
-        rgba(255, 255, 255, 0.35) 40%,
-        rgba(200, 200, 200, 0.2) 100%
+          135deg,
+          rgba(255, 255, 255, 0.65) 0%,
+          rgba(255, 255, 255, 0.35) 40%,
+          rgba(200, 200, 200, 0.2) 100%
       );
       border: 1px solid rgba(255, 255, 255, 0.5);
       box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+          0 8px 32px rgba(0, 0, 0, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.05);
     }
 
     :host(.light-theme) .battery-name,
@@ -610,8 +614,8 @@ class BeautifulBatteryCard extends LitElement {
         }
       } else {
         this._isCharging = entity.state === 'charging' ||
-          (typeof entity.attributes?.battery_charging === 'boolean' && entity.attributes.battery_charging) ||
-          entity.attributes?.charging === true;
+            (typeof entity.attributes?.battery_charging === 'boolean' && entity.attributes.battery_charging) ||
+            entity.attributes?.charging === true;
         this._batteryState = this._isCharging ? 'charging' : 'discharging';
       }
     }
@@ -755,10 +759,10 @@ class BeautifulBatteryCard extends LitElement {
               <div>
                 <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px;">
                   <div class="charge-glow"
-                       style="height: 50%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
+                       style="transform: translateY(50%); background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
                   </div>
                   <div class="charge-fill"
-                       style="height: 50%; background: linear-gradient(0deg, ${color}, ${color}ee);">
+                       style="transform: translateY(50%); background: linear-gradient(0deg, ${color}, ${color}ee);">
                     ${this._anim('liquid_movement') ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
@@ -826,8 +830,8 @@ class BeautifulBatteryCard extends LitElement {
     const rotateY = liquidOn && this._mouseActive ? clamp(this._mouseX * 15, -12, 12) : 0;
 
     const sloshAmplitude = liquidOn && this._mouseActive
-      ? 1 + Math.abs(this._mouseX) * 2 + Math.abs(this._mouseY) * 1.5
-      : 1;
+        ? 1 + Math.abs(this._mouseX) * 2 + Math.abs(this._mouseY) * 1.5
+        : 1;
 
     const liquidTopPx = bodyH * (1 - pct / 100);
 
@@ -846,8 +850,8 @@ class BeautifulBatteryCard extends LitElement {
     ].filter(Boolean).join(' ');
 
     const fillBg = liquidOn
-      ? `linear-gradient(180deg, ${color}, ${color}cc, ${color}, ${color}ee)`
-      : `linear-gradient(0deg, ${color}, ${color}ee)`;
+        ? `linear-gradient(180deg, ${color}, ${color}cc, ${color}, ${color}ee)`
+        : `linear-gradient(0deg, ${color}, ${color}ee)`;
 
     const bodyClasses = [
       'battery-body',
@@ -885,11 +889,11 @@ class BeautifulBatteryCard extends LitElement {
               <div>
                 <div class="battery-shell" style="width:${bodyW}px; height:${totalH}px;">
                   <div class="charge-glow"
-                       style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color}; clip-path: ${shellClip};">
+                       style="transform: translateY(${100 - pct}%); background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color}; clip-path: ${shellClip};">
                   </div>
 
                   <div class="${fillClasses}"
-                       style="height: ${pct}%; background: ${fillBg}; clip-path: ${shellClip};">
+                       style="transform: translateY(${100 - pct}%); background: ${fillBg}; clip-path: ${shellClip};">
                     ${liquidOn ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
@@ -992,10 +996,10 @@ class BeautifulBatteryCard extends LitElement {
               ${this._config.show_power && power != null ? html`
                 <span><span class="battery-detail-value">${power.toFixed(1)}</span> W</span>
               ` : nothing}
-                  </div>
-                </div>
-              </div>
-              </div>
+            </div>
+          </div>
+        </div>
+        </div>
       </ha-card>
     `;
   }

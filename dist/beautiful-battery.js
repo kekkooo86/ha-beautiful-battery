@@ -1,4 +1,4 @@
-const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){let a=Promise.resolve();if(e&&e.length>0){let n=function(h){return Promise.all(h.map(p=>Promise.resolve(p).then(r=>({status:"fulfilled",value:r}),r=>({status:"rejected",reason:r}))))};document.getElementsByTagName("link");const l=document.querySelector("meta[property=csp-nonce]"),c=l?.nonce||l?.getAttribute("nonce");a=n(e.map(h=>{if(h=Nt(h),h in ot)return;ot[h]=!0;const p=h.endsWith(".css"),r=p?'[rel="stylesheet"]':"";if(document.querySelector(`link[href="${h}"]${r}`))return;const u=document.createElement("link");if(u.rel=p?"stylesheet":Tt,p||(u.as="script"),u.crossOrigin="",u.href=h,c&&u.setAttribute("nonce",c),document.head.appendChild(u),p)return new Promise((f,b)=>{u.addEventListener("load",f),u.addEventListener("error",()=>b(new Error(`Unable to preload CSS for ${h}`)))})}))}function o(n){const l=new Event("vite:preloadError",{cancelable:!0});if(l.payload=n,window.dispatchEvent(l),!l.defaultPrevented)throw n}return a.then(n=>{for(const l of n||[])l.status==="rejected"&&o(l.reason);return t().catch(o)})};/**
+const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){let a=Promise.resolve();if(e&&e.length>0){let n=function(h){return Promise.all(h.map(p=>Promise.resolve(p).then(r=>({status:"fulfilled",value:r}),r=>({status:"rejected",reason:r}))))};document.getElementsByTagName("link");const l=document.querySelector("meta[property=csp-nonce]"),c=l?.nonce||l?.getAttribute("nonce");a=n(e.map(h=>{if(h=Nt(h),h in ot)return;ot[h]=!0;const p=h.endsWith(".css"),r=p?'[rel="stylesheet"]':"";if(document.querySelector(`link[href="${h}"]${r}`))return;const u=document.createElement("link");if(u.rel=p?"stylesheet":Tt,p||(u.as="script"),u.crossOrigin="",u.href=h,c&&u.setAttribute("nonce",c),document.head.appendChild(u),p)return new Promise((f,m)=>{u.addEventListener("load",f),u.addEventListener("error",()=>m(new Error(`Unable to preload CSS for ${h}`)))})}))}function o(n){const l=new Event("vite:preloadError",{cancelable:!0});if(l.payload=n,window.dispatchEvent(l),!l.defaultPrevented)throw n}return a.then(n=>{for(const l of n||[])l.status==="rejected"&&o(l.reason);return t().catch(o)})};/**
  * @license
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
@@ -12,7 +12,7 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
  * SPDX-License-Identifier: BSD-3-Clause
  */const Z=globalThis,ht=i=>i,L=Z.trustedTypes,dt=L?L.createPolicy("lit-html",{createHTML:i=>i}):void 0,At="$lit$",$=`lit$${Math.random().toFixed(9).slice(2)}$`,St="?"+$,Xt=`<${St}>`,A=document,O=()=>A.createComment(""),T=i=>i===null||typeof i!="object"&&typeof i!="function",J=Array.isArray,Wt=i=>J(i)||typeof i?.[Symbol.iterator]=="function",Y=`[ 	
 \f\r]`,z=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,pt=/-->/g,gt=/>/g,w=RegExp(`>|${Y}(?:([^\\s"'>=/]+)(${Y}*=${Y}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`,"g"),ut=/'/g,_t=/"/g,Et=/^(?:script|style|textarea|title)$/i,Vt=i=>(t,...e)=>({_$litType$:i,strings:t,values:e}),g=Vt(1),C=Symbol.for("lit-noChange"),d=Symbol.for("lit-nothing"),ft=new WeakMap,x=A.createTreeWalker(A,129);function Pt(i,t){if(!J(i)||!i.hasOwnProperty("raw"))throw Error("invalid template strings array");return dt!==void 0?dt.createHTML(t):t}const Gt=(i,t)=>{const e=i.length-1,s=[];let a,o=t===2?"<svg>":t===3?"<math>":"",n=z;for(let l=0;l<e;l++){const c=i[l];let h,p,r=-1,u=0;for(;u<c.length&&(n.lastIndex=u,p=n.exec(c),p!==null);)u=n.lastIndex,n===z?p[1]==="!--"?n=pt:p[1]!==void 0?n=gt:p[2]!==void 0?(Et.test(p[2])&&(a=RegExp("</"+p[2],"g")),n=w):p[3]!==void 0&&(n=w):n===w?p[0]===">"?(n=a??z,r=-1):p[1]===void 0?r=-2:(r=n.lastIndex-p[2].length,h=p[1],n=p[3]===void 0?w:p[3]==='"'?_t:ut):n===_t||n===ut?n=w:n===pt||n===gt?n=z:(n=w,a=void 0);const f=n===w&&i[l+1].startsWith("/>")?" ":"";o+=n===z?c+Xt:r>=0?(s.push(h),c.slice(0,r)+At+c.slice(r)+$+f):c+$+(r===-2?l:f)}return[Pt(i,o+(i[e]||"<?>")+(t===2?"</svg>":t===3?"</math>":"")),s]};class N{constructor({strings:t,_$litType$:e},s){let a;this.parts=[];let o=0,n=0;const l=t.length-1,c=this.parts,[h,p]=Gt(t,e);if(this.el=N.createElement(h,s),x.currentNode=this.el.content,e===2||e===3){const r=this.el.content.firstChild;r.replaceWith(...r.childNodes)}for(;(a=x.nextNode())!==null&&c.length<l;){if(a.nodeType===1){if(a.hasAttributes())for(const r of a.getAttributeNames())if(r.endsWith(At)){const u=p[n++],f=a.getAttribute(r).split($),b=/([.?@])?(.*)/.exec(u);c.push({type:1,index:o,name:b[2],strings:f,ctor:b[1]==="."?Jt:b[1]==="?"?Kt:b[1]==="@"?Qt:B}),a.removeAttribute(r)}else r.startsWith($)&&(c.push({type:6,index:o}),a.removeAttribute(r));if(Et.test(a.tagName)){const r=a.textContent.split($),u=r.length-1;if(u>0){a.textContent=L?L.emptyScript:"";for(let f=0;f<u;f++)a.append(r[f],O()),x.nextNode(),c.push({type:2,index:++o});a.append(r[u],O())}}}else if(a.nodeType===8)if(a.data===St)c.push({type:2,index:o});else{let r=-1;for(;(r=a.data.indexOf($,r+1))!==-1;)c.push({type:7,index:o}),r+=$.length-1}o++}}static createElement(t,e){const s=A.createElement("template");return s.innerHTML=t,s}}function k(i,t,e=i,s){if(t===C)return t;let a=s!==void 0?e._$Co?.[s]:e._$Cl;const o=T(t)?void 0:t._$litDirective$;return a?.constructor!==o&&(a?._$AO?.(!1),o===void 0?a=void 0:(a=new o(i),a._$AT(i,e,s)),s!==void 0?(e._$Co??=[])[s]=a:e._$Cl=a),a!==void 0&&(t=k(i,a._$AS(i,t.values),a,s)),t}class Zt{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:s}=this._$AD,a=(t?.creationScope??A).importNode(e,!0);x.currentNode=a;let o=x.nextNode(),n=0,l=0,c=s[0];for(;c!==void 0;){if(n===c.index){let h;c.type===2?h=new R(o,o.nextSibling,this,t):c.type===1?h=new c.ctor(o,c.name,c.strings,this,t):c.type===6&&(h=new te(o,this,t)),this._$AV.push(h),c=s[++l]}n!==c?.index&&(o=x.nextNode(),n++)}return x.currentNode=A,a}p(t){let e=0;for(const s of this._$AV)s!==void 0&&(s.strings!==void 0?(s._$AI(t,s,e),e+=s.strings.length-2):s._$AI(t[e])),e++}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,s,a){this.type=2,this._$AH=d,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=s,this.options=a,this._$Cv=a?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return e!==void 0&&t?.nodeType===11&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=k(this,t,e),T(t)?t===d||t==null||t===""?(this._$AH!==d&&this._$AR(),this._$AH=d):t!==this._$AH&&t!==C&&this._(t):t._$litType$!==void 0?this.$(t):t.nodeType!==void 0?this.T(t):Wt(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==d&&T(this._$AH)?this._$AA.nextSibling.data=t:this.T(A.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:s}=t,a=typeof s=="number"?this._$AC(t):(s.el===void 0&&(s.el=N.createElement(Pt(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===a)this._$AH.p(e);else{const o=new Zt(a,this),n=o.u(this.options);o.p(e),this.T(n),this._$AH=o}}_$AC(t){let e=ft.get(t.strings);return e===void 0&&ft.set(t.strings,e=new N(t)),e}k(t){J(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let s,a=0;for(const o of t)a===e.length?e.push(s=new R(this.O(O()),this.O(O()),this,this.options)):s=e[a],s._$AI(o),a++;a<e.length&&(this._$AR(s&&s._$AB.nextSibling,a),e.length=a)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t!==this._$AB;){const s=ht(t).nextSibling;ht(t).remove(),t=s}}setConnected(t){this._$AM===void 0&&(this._$Cv=t,this._$AP?.(t))}}class B{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,s,a,o){this.type=1,this._$AH=d,this._$AN=void 0,this.element=t,this.name=e,this._$AM=a,this.options=o,s.length>2||s[0]!==""||s[1]!==""?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=d}_$AI(t,e=this,s,a){const o=this.strings;let n=!1;if(o===void 0)t=k(this,t,e,0),n=!T(t)||t!==this._$AH&&t!==C,n&&(this._$AH=t);else{const l=t;let c,h;for(t=o[0],c=0;c<o.length-1;c++)h=k(this,l[s+c],e,c),h===C&&(h=this._$AH[c]),n||=!T(h)||h!==this._$AH[c],h===d?t=d:t!==d&&(t+=(h??"")+o[c+1]),this._$AH[c]=h}n&&!a&&this.j(t)}j(t){t===d?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class Jt extends B{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===d?void 0:t}}class Kt extends B{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==d)}}class Qt extends B{constructor(t,e,s,a,o){super(t,e,s,a,o),this.type=5}_$AI(t,e=this){if((t=k(this,t,e,0)??d)===C)return;const s=this._$AH,a=t===d&&s!==d||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,o=t!==d&&(s===d||a);a&&this.element.removeEventListener(this.name,this,s),o&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){typeof this._$AH=="function"?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class te{constructor(t,e,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){k(this,t)}}const ee=Z.litHtmlPolyfillSupport;ee?.(N,R),(Z.litHtmlVersions??=[]).push("3.3.3");const ie=(i,t,e)=>{const s=e?.renderBefore??t;let a=s._$litPart$;if(a===void 0){const o=e?.renderBefore??null;s._$litPart$=a=new R(t.insertBefore(O(),o),o,void 0,e??{})}return a._$AI(i),a};/**
+\f\r"'\`<>=]|("|')|))|$)`,"g"),ut=/'/g,_t=/"/g,Et=/^(?:script|style|textarea|title)$/i,Vt=i=>(t,...e)=>({_$litType$:i,strings:t,values:e}),g=Vt(1),C=Symbol.for("lit-noChange"),d=Symbol.for("lit-nothing"),ft=new WeakMap,x=A.createTreeWalker(A,129);function Pt(i,t){if(!J(i)||!i.hasOwnProperty("raw"))throw Error("invalid template strings array");return dt!==void 0?dt.createHTML(t):t}const Gt=(i,t)=>{const e=i.length-1,s=[];let a,o=t===2?"<svg>":t===3?"<math>":"",n=z;for(let l=0;l<e;l++){const c=i[l];let h,p,r=-1,u=0;for(;u<c.length&&(n.lastIndex=u,p=n.exec(c),p!==null);)u=n.lastIndex,n===z?p[1]==="!--"?n=pt:p[1]!==void 0?n=gt:p[2]!==void 0?(Et.test(p[2])&&(a=RegExp("</"+p[2],"g")),n=w):p[3]!==void 0&&(n=w):n===w?p[0]===">"?(n=a??z,r=-1):p[1]===void 0?r=-2:(r=n.lastIndex-p[2].length,h=p[1],n=p[3]===void 0?w:p[3]==='"'?_t:ut):n===_t||n===ut?n=w:n===pt||n===gt?n=z:(n=w,a=void 0);const f=n===w&&i[l+1].startsWith("/>")?" ":"";o+=n===z?c+Xt:r>=0?(s.push(h),c.slice(0,r)+At+c.slice(r)+$+f):c+$+(r===-2?l:f)}return[Pt(i,o+(i[e]||"<?>")+(t===2?"</svg>":t===3?"</math>":"")),s]};class N{constructor({strings:t,_$litType$:e},s){let a;this.parts=[];let o=0,n=0;const l=t.length-1,c=this.parts,[h,p]=Gt(t,e);if(this.el=N.createElement(h,s),x.currentNode=this.el.content,e===2||e===3){const r=this.el.content.firstChild;r.replaceWith(...r.childNodes)}for(;(a=x.nextNode())!==null&&c.length<l;){if(a.nodeType===1){if(a.hasAttributes())for(const r of a.getAttributeNames())if(r.endsWith(At)){const u=p[n++],f=a.getAttribute(r).split($),m=/([.?@])?(.*)/.exec(u);c.push({type:1,index:o,name:m[2],strings:f,ctor:m[1]==="."?Jt:m[1]==="?"?Kt:m[1]==="@"?Qt:B}),a.removeAttribute(r)}else r.startsWith($)&&(c.push({type:6,index:o}),a.removeAttribute(r));if(Et.test(a.tagName)){const r=a.textContent.split($),u=r.length-1;if(u>0){a.textContent=L?L.emptyScript:"";for(let f=0;f<u;f++)a.append(r[f],O()),x.nextNode(),c.push({type:2,index:++o});a.append(r[u],O())}}}else if(a.nodeType===8)if(a.data===St)c.push({type:2,index:o});else{let r=-1;for(;(r=a.data.indexOf($,r+1))!==-1;)c.push({type:7,index:o}),r+=$.length-1}o++}}static createElement(t,e){const s=A.createElement("template");return s.innerHTML=t,s}}function k(i,t,e=i,s){if(t===C)return t;let a=s!==void 0?e._$Co?.[s]:e._$Cl;const o=T(t)?void 0:t._$litDirective$;return a?.constructor!==o&&(a?._$AO?.(!1),o===void 0?a=void 0:(a=new o(i),a._$AT(i,e,s)),s!==void 0?(e._$Co??=[])[s]=a:e._$Cl=a),a!==void 0&&(t=k(i,a._$AS(i,t.values),a,s)),t}class Zt{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:s}=this._$AD,a=(t?.creationScope??A).importNode(e,!0);x.currentNode=a;let o=x.nextNode(),n=0,l=0,c=s[0];for(;c!==void 0;){if(n===c.index){let h;c.type===2?h=new R(o,o.nextSibling,this,t):c.type===1?h=new c.ctor(o,c.name,c.strings,this,t):c.type===6&&(h=new te(o,this,t)),this._$AV.push(h),c=s[++l]}n!==c?.index&&(o=x.nextNode(),n++)}return x.currentNode=A,a}p(t){let e=0;for(const s of this._$AV)s!==void 0&&(s.strings!==void 0?(s._$AI(t,s,e),e+=s.strings.length-2):s._$AI(t[e])),e++}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,e,s,a){this.type=2,this._$AH=d,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=s,this.options=a,this._$Cv=a?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return e!==void 0&&t?.nodeType===11&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=k(this,t,e),T(t)?t===d||t==null||t===""?(this._$AH!==d&&this._$AR(),this._$AH=d):t!==this._$AH&&t!==C&&this._(t):t._$litType$!==void 0?this.$(t):t.nodeType!==void 0?this.T(t):Wt(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==d&&T(this._$AH)?this._$AA.nextSibling.data=t:this.T(A.createTextNode(t)),this._$AH=t}$(t){const{values:e,_$litType$:s}=t,a=typeof s=="number"?this._$AC(t):(s.el===void 0&&(s.el=N.createElement(Pt(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===a)this._$AH.p(e);else{const o=new Zt(a,this),n=o.u(this.options);o.p(e),this.T(n),this._$AH=o}}_$AC(t){let e=ft.get(t.strings);return e===void 0&&ft.set(t.strings,e=new N(t)),e}k(t){J(this._$AH)||(this._$AH=[],this._$AR());const e=this._$AH;let s,a=0;for(const o of t)a===e.length?e.push(s=new R(this.O(O()),this.O(O()),this,this.options)):s=e[a],s._$AI(o),a++;a<e.length&&(this._$AR(s&&s._$AB.nextSibling,a),e.length=a)}_$AR(t=this._$AA.nextSibling,e){for(this._$AP?.(!1,!0,e);t!==this._$AB;){const s=ht(t).nextSibling;ht(t).remove(),t=s}}setConnected(t){this._$AM===void 0&&(this._$Cv=t,this._$AP?.(t))}}class B{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,s,a,o){this.type=1,this._$AH=d,this._$AN=void 0,this.element=t,this.name=e,this._$AM=a,this.options=o,s.length>2||s[0]!==""||s[1]!==""?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=d}_$AI(t,e=this,s,a){const o=this.strings;let n=!1;if(o===void 0)t=k(this,t,e,0),n=!T(t)||t!==this._$AH&&t!==C,n&&(this._$AH=t);else{const l=t;let c,h;for(t=o[0],c=0;c<o.length-1;c++)h=k(this,l[s+c],e,c),h===C&&(h=this._$AH[c]),n||=!T(h)||h!==this._$AH[c],h===d?t=d:t!==d&&(t+=(h??"")+o[c+1]),this._$AH[c]=h}n&&!a&&this.j(t)}j(t){t===d?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class Jt extends B{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===d?void 0:t}}class Kt extends B{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==d)}}class Qt extends B{constructor(t,e,s,a,o){super(t,e,s,a,o),this.type=5}_$AI(t,e=this){if((t=k(this,t,e,0)??d)===C)return;const s=this._$AH,a=t===d&&s!==d||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,o=t!==d&&(s===d||a);a&&this.element.removeEventListener(this.name,this,s),o&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){typeof this._$AH=="function"?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class te{constructor(t,e,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){k(this,t)}}const ee=Z.litHtmlPolyfillSupport;ee?.(N,R),(Z.litHtmlVersions??=[]).push("3.3.3");const ie=(i,t,e)=>{const s=e?.renderBefore??t;let a=s._$litPart$;if(a===void 0){const o=e?.renderBefore??null;s._$litPart$=a=new R(t.insertBefore(O(),o),o,void 0,e??{})}return a._$AI(i),a};/**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
@@ -28,7 +28,7 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function y(i){return Q({...i,state:!0,attribute:!1})}var ne=Object.defineProperty,re=Object.getOwnPropertyDescriptor,m=(i,t,e,s)=>{for(var a=s>1?void 0:s?re(t,e):t,o=i.length-1,n;o>=0;o--)(n=i[o])&&(a=(s?n(t,e,a):n(a))||a);return s&&a&&ne(t,e,a),a};const X={float:!0,liquid_movement:!0},vt={type:"custom:beautiful-battery",entity:"",show_percentage:!0,show_voltage:!1,show_power:!1,show_status:!0,animations:{...X},charge_colors:{low:"#ff4444",mid:"#ffaa00",high:"#44cc44",full:"#00ddff"},size:"medium",glow_intensity:.8,tap_action:{action:"more-info"},language:"auto",test_override:null,test_state:null,voltage_entity:"",power_entity:""},bt={small:140,medium:200,large:260},mt={it:{charging:"In carica",discharging:"In scarica",idle:"Inattiva",full:"Piena",empty:"Vuota"},en:{charging:"Charging",discharging:"Discharging",idle:"Idle",full:"Full",empty:"Empty"}};function S(i,t,e){return Math.min(Math.max(i,t),e)}function F(i,t,e){const s=parseInt(i.slice(1),16),a=parseInt(t.slice(1),16),o=s>>16&255,n=s>>8&255,l=s&255,c=a>>16&255,h=a>>8&255,p=a&255,r=Math.round(o+(c-o)*e),u=Math.round(n+(h-n)*e),f=Math.round(l+(p-l)*e);return`#${((1<<24)+(r<<16)+(u<<8)+f).toString(16).slice(1)}`}function le(i,t){return i<25?t.low:i<50?F(t.low,t.mid,(i-25)/25):i<75?F(t.mid,t.high,(i-50)/25):F(t.high,t.full,(i-75)/25)}let v=class extends P{constructor(){super(...arguments),this._chargePercent=0,this._displayPercent=0,this._isCharging=!1,this._batteryState="idle",this._mouseX=0,this._mouseY=0,this._mouseActive=!1,this._isDark=!0,this._initialized=!1,this._particles=[],this._sparks=[],this._convectionPaths=[]}static async getConfigElement(){return await Ut(()=>Promise.resolve().then(()=>pe),void 0),document.createElement("beautiful-battery-editor")}static getStubConfig(){return{type:"custom:beautiful-battery",entity:""}}setConfig(i){const t={...vt,...i};t.animations={...X,...i.animations??{}},this._config=t,this._syncState()}_anim(i){return this._config?.animations?.[i]??X[i]}updated(i){i.has("hass")&&this._syncState(),i.has("_chargePercent")&&this._anim("liquid_movement")&&this._generateParticles()}_syncState(){if(!this.hass||!this._config?.entity)return;const i=this.hass.states[this._config.entity];if(i){if(this._config.test_override!=null)this._chargePercent=S(this._config.test_override,0,100);else{const t=Number(i.state);this._chargePercent=S(Number.isFinite(t)?t:0,0,100)}if(this._config.test_state)this._batteryState=this._config.test_state,this._isCharging=this._config.test_state==="charging";else{const t=this._getEntityState(this._config.power_entity);t!==null?Math.abs(t)<5?(this._batteryState="idle",this._isCharging=!1):t<0?(this._batteryState="charging",this._isCharging=!0):(this._batteryState="discharging",this._isCharging=!1):(this._isCharging=i.state==="charging"||typeof i.attributes?.battery_charging=="boolean"&&i.attributes.battery_charging||i.attributes?.charging===!0,this._batteryState=this._isCharging?"charging":"discharging")}this._isDark=this.hass.themes?.darkMode!==!1,this._initialized?this._displayPercent=this._chargePercent:(this._initialized=!0,setTimeout(()=>{this._displayPercent=this._chargePercent},50)),this._generateParticles(),this._generateSparks(),this._generateConvection()}}_generateParticles(){const i=Math.max(2,Math.floor(this._chargePercent/15));this._particles=Array.from({length:i},()=>({x:10+Math.random()*80,y:10+Math.random()*70,size:2+Math.random()*4,dur:2+Math.random()*3,delay:Math.random()*2}))}_generateSparks(){this._sparks=Array.from({length:6},()=>({x:15+Math.random()*70,y:10+Math.random()*60,size:1+Math.random()*2.5,delay:Math.random()*1.5}))}_generateConvection(){this._convectionPaths=Array.from({length:3},(i,t)=>{const e=20+t*25,s=e+10+Math.random()*15,a=e+5+Math.random()*10,o=s-5+Math.random()*10;return{d:`M${e},90 C${a},60 ${o},40 ${s},10 C${o+5},40 ${a+5},60 ${e+3},90`,delay:t*1.2}})}_getLang(){return this._config?.language&&this._config.language!=="auto"?this._config.language:this.hass?.locale?.language??this.hass?.language??"en"}_getStatusLabel(){const i=this._getLang(),t=mt[i]??mt.en;return this._batteryState==="charging"?t.charging:this._batteryState==="idle"?t.idle:this._chargePercent>=100?t.full:this._chargePercent<=0?t.empty:t.discharging}_getColor(){return le(this._chargePercent,this._config?.charge_colors??vt.charge_colors)}_getEntityState(i){if(!this.hass||!i)return null;const t=this.hass.states[i];if(!t)return null;const e=Number(t.state);return Number.isFinite(e)?e:null}_onPointerMove(i){if(!this._anim("liquid_movement"))return;const t=this.shadowRoot?.querySelector(".battery-wrapper");if(!t)return;const e=t.getBoundingClientRect(),s=(i.clientX-e.left)/e.width-.5,a=(i.clientY-e.top)/e.height-.5;this._mouseX=s,this._mouseY=a,this._mouseActive=!0}_onPointerLeave(){this._mouseActive=!1}_handleTap(i){i.stopPropagation();const t=this._config?.tap_action;if(!(!t||t.action==="none"||!this.hass||!this._config?.entity))switch(t.action){case"more-info":{const e=new CustomEvent("hass-more-info",{bubbles:!0,composed:!0,detail:{entityId:this._config.entity}});this.dispatchEvent(e);break}case"toggle":this.hass.callService?.("homeassistant","toggle",{entity_id:this._config.entity});break;case"call-service":if(t.service){const[e,s]=t.service.split(".");this.hass.callService?.(e,s,t.service_data,t.target)}break}}_renderPlaceholder(){const i=bt[this._config?.size??"medium"],t=i*.45,e=i,s=t*.35,a=12,o=this._getColor(),n=S(this._config?.glow_intensity??.8,0,1),l=e+a;return g`
+ */function y(i){return Q({...i,state:!0,attribute:!1})}var ne=Object.defineProperty,re=Object.getOwnPropertyDescriptor,b=(i,t,e,s)=>{for(var a=s>1?void 0:s?re(t,e):t,o=i.length-1,n;o>=0;o--)(n=i[o])&&(a=(s?n(t,e,a):n(a))||a);return s&&a&&ne(t,e,a),a};const X={float:!0,liquid_movement:!0},vt={type:"custom:beautiful-battery",entity:"",show_percentage:!0,show_voltage:!1,show_power:!1,show_status:!0,animations:{...X},charge_colors:{low:"#ff4444",mid:"#ffaa00",high:"#44cc44",full:"#00ddff"},size:"medium",glow_intensity:.8,tap_action:{action:"more-info"},language:"auto",test_override:null,test_state:null,voltage_entity:"",power_entity:""},mt={small:140,medium:200,large:260},bt={it:{charging:"In carica",discharging:"In scarica",idle:"Inattiva",full:"Piena",empty:"Vuota"},en:{charging:"Charging",discharging:"Discharging",idle:"Idle",full:"Full",empty:"Empty"}};function S(i,t,e){return Math.min(Math.max(i,t),e)}function F(i,t,e){const s=parseInt(i.slice(1),16),a=parseInt(t.slice(1),16),o=s>>16&255,n=s>>8&255,l=s&255,c=a>>16&255,h=a>>8&255,p=a&255,r=Math.round(o+(c-o)*e),u=Math.round(n+(h-n)*e),f=Math.round(l+(p-l)*e);return`#${((1<<24)+(r<<16)+(u<<8)+f).toString(16).slice(1)}`}function le(i,t){return i<25?t.low:i<50?F(t.low,t.mid,(i-25)/25):i<75?F(t.mid,t.high,(i-50)/25):F(t.high,t.full,(i-75)/25)}let v=class extends P{constructor(){super(...arguments),this._chargePercent=0,this._displayPercent=0,this._isCharging=!1,this._batteryState="idle",this._mouseX=0,this._mouseY=0,this._mouseActive=!1,this._isDark=!0,this._initialized=!1,this._particles=[],this._sparks=[],this._convectionPaths=[]}static async getConfigElement(){return await Ut(()=>Promise.resolve().then(()=>pe),void 0),document.createElement("beautiful-battery-editor")}static getStubConfig(){return{type:"custom:beautiful-battery",entity:""}}setConfig(i){const t={...vt,...i};t.animations={...X,...i.animations??{}},this._config=t,this._syncState()}_anim(i){return this._config?.animations?.[i]??X[i]}updated(i){i.has("hass")&&this._syncState(),i.has("_chargePercent")&&this._anim("liquid_movement")&&this._generateParticles()}_syncState(){if(!this.hass||!this._config?.entity)return;const i=this.hass.states[this._config.entity];if(i){if(this._config.test_override!=null)this._chargePercent=S(this._config.test_override,0,100);else{const t=Number(i.state);this._chargePercent=S(Number.isFinite(t)?t:0,0,100)}if(this._config.test_state)this._batteryState=this._config.test_state,this._isCharging=this._config.test_state==="charging";else{const t=this._getEntityState(this._config.power_entity);t!==null?Math.abs(t)<5?(this._batteryState="idle",this._isCharging=!1):t<0?(this._batteryState="charging",this._isCharging=!0):(this._batteryState="discharging",this._isCharging=!1):(this._isCharging=i.state==="charging"||typeof i.attributes?.battery_charging=="boolean"&&i.attributes.battery_charging||i.attributes?.charging===!0,this._batteryState=this._isCharging?"charging":"discharging")}this._isDark=this.hass.themes?.darkMode!==!1,this._initialized?this._displayPercent=this._chargePercent:(this._initialized=!0,setTimeout(()=>{this._displayPercent=this._chargePercent},50)),this._generateParticles(),this._generateSparks(),this._generateConvection()}}_generateParticles(){const i=Math.max(2,Math.floor(this._chargePercent/15));this._particles=Array.from({length:i},()=>({x:10+Math.random()*80,y:10+Math.random()*70,size:2+Math.random()*4,dur:2+Math.random()*3,delay:Math.random()*2}))}_generateSparks(){this._sparks=Array.from({length:6},()=>({x:15+Math.random()*70,y:10+Math.random()*60,size:1+Math.random()*2.5,delay:Math.random()*1.5}))}_generateConvection(){this._convectionPaths=Array.from({length:3},(i,t)=>{const e=20+t*25,s=e+10+Math.random()*15,a=e+5+Math.random()*10,o=s-5+Math.random()*10;return{d:`M${e},90 C${a},60 ${o},40 ${s},10 C${o+5},40 ${a+5},60 ${e+3},90`,delay:t*1.2}})}_getLang(){return this._config?.language&&this._config.language!=="auto"?this._config.language:this.hass?.locale?.language??this.hass?.language??"en"}_getStatusLabel(){const i=this._getLang(),t=bt[i]??bt.en;return this._batteryState==="charging"?t.charging:this._batteryState==="idle"?t.idle:this._chargePercent>=100?t.full:this._chargePercent<=0?t.empty:t.discharging}_getColor(){return le(this._chargePercent,this._config?.charge_colors??vt.charge_colors)}_getEntityState(i){if(!this.hass||!i)return null;const t=this.hass.states[i];if(!t)return null;const e=Number(t.state);return Number.isFinite(e)?e:null}_onPointerMove(i){if(!this._anim("liquid_movement"))return;const t=this.shadowRoot?.querySelector(".battery-wrapper");if(!t)return;const e=t.getBoundingClientRect(),s=(i.clientX-e.left)/e.width-.5,a=(i.clientY-e.top)/e.height-.5;this._mouseX=s,this._mouseY=a,this._mouseActive=!0}_onPointerLeave(){this._mouseActive=!1}_handleTap(i){i.stopPropagation();const t=this._config?.tap_action;if(!(!t||t.action==="none"||!this.hass||!this._config?.entity))switch(t.action){case"more-info":{const e=new CustomEvent("hass-more-info",{bubbles:!0,composed:!0,detail:{entityId:this._config.entity}});this.dispatchEvent(e);break}case"toggle":this.hass.callService?.("homeassistant","toggle",{entity_id:this._config.entity});break;case"call-service":if(t.service){const[e,s]=t.service.split(".");this.hass.callService?.(e,s,t.service_data,t.target)}break}}_renderPlaceholder(){const i=mt[this._config?.size??"medium"],t=i*.45,e=i,s=t*.35,a=12,o=this._getColor(),n=S(this._config?.glow_intensity??.8,0,1),l=e+a;return g`
       <ha-card>
         <div class="battery-wrapper ${this._anim("float")?"":"no-float"}">
           <div class="battery-outer" style="transform: rotateX(2deg) rotateY(0deg);">
@@ -37,10 +37,10 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
               <div>
                 <div class="battery-shell" style="width:${t}px; height:${l}px;">
                   <div class="charge-glow"
-                       style="height: 50%; background: ${o}; opacity: ${n}; filter: blur(${12+n*20}px); box-shadow: 0 0 ${20+n*30}px ${o};">
+                       style="transform: translateY(50%); background: ${o}; opacity: ${n}; filter: blur(${12+n*20}px); box-shadow: 0 0 ${20+n*30}px ${o};">
                   </div>
                   <div class="charge-fill"
-                       style="height: 50%; background: linear-gradient(0deg, ${o}, ${o}ee);">
+                       style="transform: translateY(50%); background: linear-gradient(0deg, ${o}, ${o}ee);">
                     ${this._anim("liquid_movement")?g`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${o};">
@@ -78,7 +78,7 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
           </div>
         </div>
       </ha-card>
-    `}render(){if(!this._config)return g``;const i=this.hass?.states[this._config.entity];if(!i)return this._config.entity?g`<ha-card><div class="battery-wrapper"><p>Entity not found</p></div></ha-card>`:this._renderPlaceholder();const t=this._displayPercent,e=this._getColor(),s=bt[this._config.size],a=s*.45,o=s,n=a*.35,l=12,c=S(this._config.glow_intensity,0,1),h=this._getEntityState(this._config.voltage_entity),p=this._getEntityState(this._config.power_entity),r=this._anim("liquid_movement"),u=r&&this._mouseActive?S(this._mouseY*-15,-12,12):0,f=r&&this._mouseActive?S(this._mouseX*15,-12,12):0,b=r&&this._mouseActive?1+Math.abs(this._mouseX)*2+Math.abs(this._mouseY)*1.5:1,et=[{left:"20%",delay:"0s"},{left:"45%",delay:"0.6s"},{left:"70%",delay:"1.2s"}],zt=["charge-fill",!this._initialized&&r?"animating":"",r?"":"no-transition",r?"breathing":"",r?"gradient-wave":""].filter(Boolean).join(" "),Mt=r?`linear-gradient(180deg, ${e}, ${e}cc, ${e}, ${e}ee)`:`linear-gradient(0deg, ${e}, ${e}ee)`,Ot=["battery-body",this._batteryState==="charging"?"charging":"",r&&this._batteryState==="charging"?"shimmer-on":""].filter(Boolean).join(" "),j=o+l,it=((a-n)/2/a*100).toFixed(1),st=((a+n)/2/a*100).toFixed(1),H=(l/j*100).toFixed(1),at=`polygon(${it}% 0%, ${st}% 0%, ${st}% ${H}%, 100% ${H}%, 100% 100%, 0% 100%, 0% ${H}%, ${it}% ${H}%)`;return g`
+    `}render(){if(!this._config)return g``;const i=this.hass?.states[this._config.entity];if(!i)return this._config.entity?g`<ha-card><div class="battery-wrapper"><p>Entity not found</p></div></ha-card>`:this._renderPlaceholder();const t=this._displayPercent,e=this._getColor(),s=mt[this._config.size],a=s*.45,o=s,n=a*.35,l=12,c=S(this._config.glow_intensity,0,1),h=this._getEntityState(this._config.voltage_entity),p=this._getEntityState(this._config.power_entity),r=this._anim("liquid_movement"),u=r&&this._mouseActive?S(this._mouseY*-15,-12,12):0,f=r&&this._mouseActive?S(this._mouseX*15,-12,12):0,m=r&&this._mouseActive?1+Math.abs(this._mouseX)*2+Math.abs(this._mouseY)*1.5:1,et=[{left:"20%",delay:"0s"},{left:"45%",delay:"0.6s"},{left:"70%",delay:"1.2s"}],zt=["charge-fill",!this._initialized&&r?"animating":"",r?"":"no-transition",r?"breathing":"",r?"gradient-wave":""].filter(Boolean).join(" "),Mt=r?`linear-gradient(180deg, ${e}, ${e}cc, ${e}, ${e}ee)`:`linear-gradient(0deg, ${e}, ${e}ee)`,Ot=["battery-body",this._batteryState==="charging"?"charging":"",r&&this._batteryState==="charging"?"shimmer-on":""].filter(Boolean).join(" "),j=o+l,it=((a-n)/2/a*100).toFixed(1),st=((a+n)/2/a*100).toFixed(1),H=(l/j*100).toFixed(1),at=`polygon(${it}% 0%, ${st}% 0%, ${st}% ${H}%, 100% ${H}%, 100% 100%, 0% 100%, 0% ${H}%, ${it}% ${H}%)`;return g`
       <ha-card>
         <div class="battery-wrapper ${this._mouseActive?"mouse-active":""} ${this._anim("float")?"":"no-float"}"
              @pointermove=${this._onPointerMove}
@@ -102,17 +102,17 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
               <div>
                 <div class="battery-shell" style="width:${a}px; height:${j}px;">
                   <div class="charge-glow"
-                       style="height: ${t}%; background: ${e}; opacity: ${c}; filter: blur(${12+c*20}px); box-shadow: 0 0 ${20+c*30}px ${e}; clip-path: ${at};">
+                       style="transform: translateY(${100-t}%); background: ${e}; opacity: ${c}; filter: blur(${12+c*20}px); box-shadow: 0 0 ${20+c*30}px ${e}; clip-path: ${at};">
                   </div>
 
                   <div class="${zt}"
-                       style="height: ${t}%; background: ${Mt}; clip-path: ${at};">
+                       style="transform: translateY(${100-t}%); background: ${Mt}; clip-path: ${at};">
                     ${r?g`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${e};">
-                        <path d="${this._wavePath(0,b)}">
+                        <path d="${this._wavePath(0,m)}">
                           <animate attributeName="d"
-                                   values="${this._wavePath(0,b)};${this._wavePath(1,b)};${this._wavePath(0,b)}"
+                                   values="${this._wavePath(0,m)};${this._wavePath(1,m)};${this._wavePath(0,m)}"
                                    dur="3s"
                                    repeatCount="indefinite" />
                         </path>
@@ -120,7 +120,7 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
                     `:g`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${e};">
-                        <path d="${this._wavePath(0,b)}" />
+                        <path d="${this._wavePath(0,m)}" />
                       </svg>
                     `}
 
@@ -209,10 +209,10 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
               ${this._config.show_power&&p!=null?g`
                 <span><span class="battery-detail-value">${p.toFixed(1)}</span> W</span>
               `:d}
-                  </div>
-                </div>
-              </div>
-              </div>
+            </div>
+          </div>
+        </div>
+        </div>
       </ha-card>
     `}_wavePath(i=0,t=1){const e=[];for(let s=0;s<=100;s+=2){const a=8+(Math.sin((s+i*50)*.08)*4+Math.sin((s+i*30)*.15)*2)*t;e.push(`${s},${a.toFixed(1)}`)}return`M0,16 L${e.join(" L")} L100,16 Z`}getCardSize(){return 3}};v.styles=xt`
     :host {
@@ -353,17 +353,17 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
       height: 100%;
       border-radius: 6px 6px 0 0;
       background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.08) 100%
+          180deg,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0.08) 100%
       );
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-bottom: none;
       box-shadow:
-        0 -2px 8px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          0 -2px 8px rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
       position: relative;
       z-index: 3;
     }
@@ -373,18 +373,18 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
       overflow: hidden;
       border-radius: 6px 6px 16px 16px;
       background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12) 0%,
-        rgba(255, 255, 255, 0.05) 40%,
-        rgba(0, 0, 0, 0.1) 100%
+          135deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          rgba(255, 255, 255, 0.05) 40%,
+          rgba(0, 0, 0, 0.1) 100%
       );
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+          0 8px 32px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.1);
     }
 
     .battery-shell::before {
@@ -395,9 +395,9 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
       right: 0;
       height: 40%;
       background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.0) 100%
+          180deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.0) 100%
       );
       border-radius: 6px 6px 0 0;
       pointer-events: none;
@@ -427,6 +427,7 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
       bottom: 0;
       left: 0;
       right: 0;
+      height: 100%;
       border-radius: 0 0 16px 16px;
       pointer-events: none;
       z-index: 0;
@@ -437,10 +438,13 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
       bottom: 0;
       left: 0;
       right: 0;
+      height: 100%;
       border-radius: 0 0 14px 14px;
-      transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  background 0.8s ease;
+      transform-origin: bottom center;
+      transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.8s ease;
       z-index: 1;
+      will-change: transform;
     }
 
     .charge-fill.no-transition {
@@ -448,8 +452,8 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
     }
 
     .charge-fill.animating {
-      transition: height 2s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  background 0.8s ease;
+      transition: transform 2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      background 0.8s ease;
     }
 
     .charge-fill.breathing {
@@ -469,9 +473,9 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
       right: 0;
       height: 20px;
       background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.35) 0%,
-        rgba(255, 255, 255, 0.0) 100%
+          180deg,
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.0) 100%
       );
       pointer-events: none;
     }
@@ -586,8 +590,8 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
     }
 
     @keyframes bb-breathe {
-      0%, 100% { transform: scaleX(1); }
-      50% { transform: scaleX(0.97); }
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.08); }
     }
 
     @keyframes bb-gradient-flow {
@@ -648,16 +652,16 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
 
     :host(.light-theme) .battery-shell {
       background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.65) 0%,
-        rgba(255, 255, 255, 0.35) 40%,
-        rgba(200, 200, 200, 0.2) 100%
+          135deg,
+          rgba(255, 255, 255, 0.65) 0%,
+          rgba(255, 255, 255, 0.35) 40%,
+          rgba(200, 200, 200, 0.2) 100%
       );
       border: 1px solid rgba(255, 255, 255, 0.5);
       box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+          0 8px 32px rgba(0, 0, 0, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.05);
     }
 
     :host(.light-theme) .battery-name,
@@ -684,7 +688,7 @@ const Tt="modulepreload",Nt=function(i){return"/"+i},ot={},Ut=function(t,e,s){le
     :host(.light-theme) .battery-shell::after {
       background: rgba(255, 255, 255, 0.4);
     }
-  `;m([Q({attribute:!1})],v.prototype,"hass",2);m([y()],v.prototype,"_config",2);m([y()],v.prototype,"_chargePercent",2);m([y()],v.prototype,"_displayPercent",2);m([y()],v.prototype,"_isCharging",2);m([y()],v.prototype,"_batteryState",2);m([y()],v.prototype,"_mouseX",2);m([y()],v.prototype,"_mouseY",2);m([y()],v.prototype,"_mouseActive",2);m([y()],v.prototype,"_isDark",2);m([y()],v.prototype,"_initialized",2);v=m([Ct("beautiful-battery")],v);const ce="beautiful-battery";window.customCards=window.customCards??[];window.customCards.push({type:ce,name:"Beautiful Battery",description:"3D liquid glass battery visualization with smooth animations",icon:"mdi:battery",preview:!0});var he=Object.defineProperty,de=Object.getOwnPropertyDescriptor,tt=(i,t,e,s)=>{for(var a=s>1?void 0:s?de(t,e):t,o=i.length-1,n;o>=0;o--)(n=i[o])&&(a=(s?n(t,e,a):n(a))||a);return s&&a&&he(t,e,a),a};const kt={float:!0,liquid_movement:!0},yt={type:"custom:beautiful-battery",entity:"",show_percentage:!0,show_voltage:!1,show_power:!1,show_status:!0,animations:{...kt},charge_colors:{low:"#ff4444",mid:"#ffaa00",high:"#44cc44",full:"#00ddff"},size:"medium",glow_intensity:.8,tap_action:{action:"more-info"},language:"auto",test_override:null,test_state:null,voltage_entity:"",power_entity:""},$t={it:{entity:"Entita",battery_sensor:"Sensore batteria",display_name:"Nome visualizzato",appearance:"Aspetto",size:"Dimensione",size_small:"Piccolo (140px)",size_medium:"Medio (200px)",size_large:"Grande (260px)",glow:"Intensita bagliore",display:"Visualizzazione",show_pct:"Mostra percentuale",show_status:"Mostra stato",show_voltage:"Mostra voltaggio",show_power:"Mostra potenza",show_particles:"Mostra particelle",voltage_entity:"Entita voltaggio",power_entity:"Entita potenza",language:"Lingua",lang_auto:"Automatica (da HA)",interaction:"Interazione",tap_action:"Azione al tocco",tap_more:"Piu info",tap_toggle:"Toggle",tap_none:"Nessuna",test_override:"Override test percentuale",test_off:"Disabilitato (usa entita)",test_reset:"Reset",colors:"Colori",color_low:"Basso 0-25%",color_mid:"Medio 25-50%",color_high:"Alto 50-75%",color_full:"Pieno 75-100%",animations:"Animazioni",anim_float:"Animazione galleggiamento",anim_liquid:"Animazione movimento liquido",test_state:"Simula stato batteria",test_state_off:"Disabilitato (usa entita)",test_state_charging:"In carica",test_state_discharging:"In scarica",test_state_idle:"Inattiva"},en:{entity:"Entity",battery_sensor:"Battery sensor",display_name:"Display name",appearance:"Appearance",size:"Size",size_small:"Small (140px)",size_medium:"Medium (200px)",size_large:"Large (260px)",glow:"Glow intensity",display:"Display",show_pct:"Show percentage",show_status:"Show status",show_voltage:"Show voltage",show_power:"Show power",show_particles:"Show particles",voltage_entity:"Voltage entity",power_entity:"Power entity",language:"Language",lang_auto:"Auto (from HA)",interaction:"Interaction",tap_action:"Tap action",tap_more:"More Info",tap_toggle:"Toggle",tap_none:"None",test_override:"Test percentage override",test_off:"Disabled (using entity)",test_reset:"Reset",colors:"Colors",color_low:"Low 0-25%",color_mid:"Mid 25-50%",color_high:"High 50-75%",color_full:"Full 75-100%",animations:"Animations",anim_float:"Float animation",anim_liquid:"Liquid movement animation",test_state:"Simulate battery state",test_state_off:"Disabled (using entity)",test_state_charging:"Charging",test_state_discharging:"Discharging",test_state_idle:"Idle"}};let U=class extends P{constructor(){super(...arguments),this._config={...yt}}setConfig(i){const t={...yt,...i};t.animations={...kt,...i.animations??{}},this._config=t}_t(i){const t=this._config.language==="auto"?this.hass?.locale?.language??this.hass?.language??"en":this._config.language;return $t[t]?.[i]??$t.en[i]??i}render(){return this.hass?g`
+  `;b([Q({attribute:!1})],v.prototype,"hass",2);b([y()],v.prototype,"_config",2);b([y()],v.prototype,"_chargePercent",2);b([y()],v.prototype,"_displayPercent",2);b([y()],v.prototype,"_isCharging",2);b([y()],v.prototype,"_batteryState",2);b([y()],v.prototype,"_mouseX",2);b([y()],v.prototype,"_mouseY",2);b([y()],v.prototype,"_mouseActive",2);b([y()],v.prototype,"_isDark",2);b([y()],v.prototype,"_initialized",2);v=b([Ct("beautiful-battery")],v);const ce="beautiful-battery";window.customCards=window.customCards??[];window.customCards.push({type:ce,name:"Beautiful Battery",description:"3D liquid glass battery visualization with smooth animations",icon:"mdi:battery",preview:!0});var he=Object.defineProperty,de=Object.getOwnPropertyDescriptor,tt=(i,t,e,s)=>{for(var a=s>1?void 0:s?de(t,e):t,o=i.length-1,n;o>=0;o--)(n=i[o])&&(a=(s?n(t,e,a):n(a))||a);return s&&a&&he(t,e,a),a};const kt={float:!0,liquid_movement:!0},yt={type:"custom:beautiful-battery",entity:"",show_percentage:!0,show_voltage:!1,show_power:!1,show_status:!0,animations:{...kt},charge_colors:{low:"#ff4444",mid:"#ffaa00",high:"#44cc44",full:"#00ddff"},size:"medium",glow_intensity:.8,tap_action:{action:"more-info"},language:"auto",test_override:null,test_state:null,voltage_entity:"",power_entity:""},$t={it:{entity:"Entita",battery_sensor:"Sensore batteria",display_name:"Nome visualizzato",appearance:"Aspetto",size:"Dimensione",size_small:"Piccolo (140px)",size_medium:"Medio (200px)",size_large:"Grande (260px)",glow:"Intensita bagliore",display:"Visualizzazione",show_pct:"Mostra percentuale",show_status:"Mostra stato",show_voltage:"Mostra voltaggio",show_power:"Mostra potenza",show_particles:"Mostra particelle",voltage_entity:"Entita voltaggio",power_entity:"Entita potenza",language:"Lingua",lang_auto:"Automatica (da HA)",interaction:"Interazione",tap_action:"Azione al tocco",tap_more:"Piu info",tap_toggle:"Toggle",tap_none:"Nessuna",test_override:"Override test percentuale",test_off:"Disabilitato (usa entita)",test_reset:"Reset",colors:"Colori",color_low:"Basso 0-25%",color_mid:"Medio 25-50%",color_high:"Alto 50-75%",color_full:"Pieno 75-100%",animations:"Animazioni",anim_float:"Animazione galleggiamento",anim_liquid:"Animazione movimento liquido",test_state:"Simula stato batteria",test_state_off:"Disabilitato (usa entita)",test_state_charging:"In carica",test_state_discharging:"In scarica",test_state_idle:"Inattiva"},en:{entity:"Entity",battery_sensor:"Battery sensor",display_name:"Display name",appearance:"Appearance",size:"Size",size_small:"Small (140px)",size_medium:"Medium (200px)",size_large:"Large (260px)",glow:"Glow intensity",display:"Display",show_pct:"Show percentage",show_status:"Show status",show_voltage:"Show voltage",show_power:"Show power",show_particles:"Show particles",voltage_entity:"Voltage entity",power_entity:"Power entity",language:"Language",lang_auto:"Auto (from HA)",interaction:"Interaction",tap_action:"Tap action",tap_more:"More Info",tap_toggle:"Toggle",tap_none:"None",test_override:"Test percentage override",test_off:"Disabled (using entity)",test_reset:"Reset",colors:"Colors",color_low:"Low 0-25%",color_mid:"Mid 25-50%",color_high:"High 50-75%",color_full:"Full 75-100%",animations:"Animations",anim_float:"Float animation",anim_liquid:"Liquid movement animation",test_state:"Simulate battery state",test_state_off:"Disabled (using entity)",test_state_charging:"Charging",test_state_discharging:"Discharging",test_state_idle:"Idle"}};let U=class extends P{constructor(){super(...arguments),this._config={...yt}}setConfig(i){const t={...yt,...i};t.animations={...kt,...i.animations??{}},this._config=t}_t(i){const t=this._config.language==="auto"?this.hass?.locale?.language??this.hass?.language??"en":this._config.language;return $t[t]?.[i]??$t.en[i]??i}render(){return this.hass?g`
       <div class="editor">
         <section class="section">
           <div class="section-title">${this._t("entity")}</div>
