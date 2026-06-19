@@ -1,7 +1,23 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import type { BatteryConfig } from '../types/config';
+import type { BatteryConfig, AnimationConfig } from '../types/config';
 import type { HomeAssistant } from '../types/hass';
+
+const DEFAULT_ANIMATIONS: AnimationConfig = {
+  float: true,
+  tilt_3d: true,
+  wave: true,
+  fill_transition: true,
+  shimmer: true,
+  droplets: true,
+  particles: true,
+  convection: true,
+  caustics: true,
+  breathing: true,
+  sloshing: true,
+  electrolysis: true,
+  gradient_wave: true,
+};
 
 const DEFAULT_CONFIG: BatteryConfig = {
   type: 'custom:beautiful-battery',
@@ -11,6 +27,7 @@ const DEFAULT_CONFIG: BatteryConfig = {
   show_power: false,
   show_status: true,
   show_particles: true,
+  animations: { ...DEFAULT_ANIMATIONS },
   charge_colors: {
     low: '#ff4444',
     mid: '#ffaa00',
@@ -90,6 +107,10 @@ class BeautifulBatteryCard extends LitElement {
 
     .battery-wrapper:not(.mouse-active) .battery-outer {
       animation: bb-float 4s ease-in-out infinite;
+    }
+
+    .battery-wrapper.no-float:not(.mouse-active) .battery-outer {
+      animation: none;
     }
 
     @keyframes bb-float {
@@ -277,9 +298,22 @@ class BeautifulBatteryCard extends LitElement {
       z-index: 1;
     }
 
+    .charge-fill.no-transition {
+      transition: none;
+    }
+
     .charge-fill.animating {
       transition: height 2s cubic-bezier(0.34, 1.56, 0.64, 1),
                   background 0.8s ease;
+    }
+
+    .charge-fill.breathing {
+      animation: bb-breathe 4s ease-in-out infinite;
+    }
+
+    .charge-fill.gradient-wave {
+      background-size: 100% 200%;
+      animation: bb-gradient-flow 6s ease-in-out infinite;
     }
 
     .charge-fill::before {
@@ -397,13 +431,69 @@ class BeautifulBatteryCard extends LitElement {
       color: rgba(255, 255, 255, 0.8);
     }
 
-    .charging .charge-fill::before {
+    .charging.shimmer-on .charge-fill::before {
       animation: bb-shimmer 2s ease-in-out infinite;
     }
 
     @keyframes bb-shimmer {
       0%, 100% { opacity: 0.5; }
       50% { opacity: 1; }
+    }
+
+    @keyframes bb-breathe {
+      0%, 100% { transform: scaleX(1); }
+      50% { transform: scaleX(0.97); }
+    }
+
+    @keyframes bb-gradient-flow {
+      0%, 100% { background-position: 0% 0%; }
+      50% { background-position: 0% 100%; }
+    }
+
+    .convection-line {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.15;
+    }
+
+    .convection-line path {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.5);
+      stroke-width: 0.8;
+      stroke-dasharray: 8 12;
+      animation: bb-convection-flow 4s linear infinite;
+    }
+
+    @keyframes bb-convection-flow {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -40; }
+    }
+
+    .caustics-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.12;
+      mix-blend-mode: overlay;
+    }
+
+    .electrolysis-spark {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      pointer-events: none;
+      z-index: 3;
+      animation: bb-spark 0.8s ease-out infinite;
+    }
+
+    @keyframes bb-spark {
+      0% { transform: scale(0); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.8; }
+      100% { transform: scale(0); opacity: 0; }
     }
 
     .battery-body:active {
@@ -463,6 +553,8 @@ class BeautifulBatteryCard extends LitElement {
   @state() private _isDark = true;
   @state() private _initialized = false;
   private _particles: Array<{ x: number; y: number; size: number; dur: number; delay: number }> = [];
+  private _sparks: Array<{ x: number; y: number; size: number; delay: number }> = [];
+  private _convectionPaths: Array<{ d: string; delay: number }> = [];
 
   static async getConfigElement() {
     await import('../editor/beautiful-battery-editor');
@@ -474,15 +566,21 @@ class BeautifulBatteryCard extends LitElement {
   }
 
   setConfig(config: Record<string, unknown>) {
-    this._config = { ...DEFAULT_CONFIG, ...config } as BatteryConfig;
+    const merged = { ...DEFAULT_CONFIG, ...config } as BatteryConfig;
+    merged.animations = { ...DEFAULT_ANIMATIONS, ...(config.animations as Partial<AnimationConfig> ?? {}) };
+    this._config = merged;
     this._syncState();
+  }
+
+  private _anim(key: keyof AnimationConfig): boolean {
+    return this._config?.animations?.[key] ?? DEFAULT_ANIMATIONS[key];
   }
 
   updated(changed: Map<string, unknown>) {
     if (changed.has('hass')) {
       this._syncState();
     }
-    if (changed.has('_chargePercent') && this._config?.show_particles) {
+    if (changed.has('_chargePercent') && this._anim('particles')) {
       this._generateParticles();
     }
   }
@@ -530,6 +628,8 @@ class BeautifulBatteryCard extends LitElement {
     }
 
     this._generateParticles();
+    this._generateSparks();
+    this._generateConvection();
   }
 
   private _generateParticles() {
@@ -541,6 +641,28 @@ class BeautifulBatteryCard extends LitElement {
       dur: 2 + Math.random() * 3,
       delay: Math.random() * 2,
     }));
+  }
+
+  private _generateSparks() {
+    this._sparks = Array.from({ length: 6 }, () => ({
+      x: 15 + Math.random() * 70,
+      y: 10 + Math.random() * 60,
+      size: 1 + Math.random() * 2.5,
+      delay: Math.random() * 1.5,
+    }));
+  }
+
+  private _generateConvection() {
+    this._convectionPaths = Array.from({ length: 3 }, (_, i) => {
+      const x1 = 20 + i * 25;
+      const x2 = x1 + 10 + Math.random() * 15;
+      const cp1x = x1 + 5 + Math.random() * 10;
+      const cp2x = x2 - 5 + Math.random() * 10;
+      return {
+        d: `M${x1},90 C${cp1x},60 ${cp2x},40 ${x2},10 C${cp2x + 5},40 ${cp1x + 5},60 ${x1 + 3},90`,
+        delay: i * 1.2,
+      };
+    });
   }
 
   private _getLang(): string {
@@ -573,6 +695,7 @@ class BeautifulBatteryCard extends LitElement {
   }
 
   private _onPointerMove(e: PointerEvent) {
+    if (!this._anim('tilt_3d')) return;
     const rect = this.shadowRoot?.querySelector('.battery-wrapper') as HTMLElement;
     if (!rect) return;
     const bounds = rect.getBoundingClientRect();
@@ -625,7 +748,7 @@ class BeautifulBatteryCard extends LitElement {
 
     return html`
       <ha-card>
-        <div class="battery-wrapper">
+        <div class="battery-wrapper ${!this._anim('float') ? 'no-float' : ''}">
           <div class="battery-outer" style="transform: rotateX(2deg) rotateY(0deg);">
             <div class="drops-area">
               <div class="drops-above"></div>
@@ -641,15 +764,22 @@ class BeautifulBatteryCard extends LitElement {
                   </div>
                   <div class="charge-fill"
                        style="height: 50%; background: linear-gradient(0deg, ${color}, ${color}ee);">
-                    <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
-                         style="fill: ${color};">
-                      <path d="${this._wavePath()}">
-                        <animate attributeName="d"
-                                 values="${this._wavePath()};${this._wavePath(1)};${this._wavePath()}"
-                                 dur="3s"
-                                 repeatCount="indefinite" />
-                      </path>
-                    </svg>
+                    ${this._anim('wave') ? html`
+                      <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                           style="fill: ${color};">
+                        <path d="${this._wavePath()}">
+                          <animate attributeName="d"
+                                   values="${this._wavePath()};${this._wavePath(1)};${this._wavePath()}"
+                                   dur="3s"
+                                   repeatCount="indefinite" />
+                        </path>
+                      </svg>
+                    ` : html`
+                      <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                           style="fill: ${color};">
+                        <path d="${this._wavePath()}" />
+                      </svg>
+                    `}
                   </div>
                 </div>
               </div>
@@ -689,8 +819,13 @@ class BeautifulBatteryCard extends LitElement {
     const voltage = this._getEntityState(this._config.voltage_entity);
     const power = this._getEntityState(this._config.power_entity);
 
-    const rotateX = this._mouseActive ? clamp(this._mouseY * -15, -12, 12) : 0;
-    const rotateY = this._mouseActive ? clamp(this._mouseX * 15, -12, 12) : 0;
+    const tiltActive = this._anim('tilt_3d');
+    const rotateX = tiltActive && this._mouseActive ? clamp(this._mouseY * -15, -12, 12) : 0;
+    const rotateY = tiltActive && this._mouseActive ? clamp(this._mouseX * 15, -12, 12) : 0;
+
+    const sloshAmplitude = this._anim('sloshing') && this._mouseActive
+      ? 1 + Math.abs(this._mouseX) * 2 + Math.abs(this._mouseY) * 1.5
+      : 1;
 
     const liquidTopPx = bodyH * (1 - pct / 100);
 
@@ -700,9 +835,38 @@ class BeautifulBatteryCard extends LitElement {
       { left: '70%', delay: '1.2s' },
     ];
 
+    const showWave = this._anim('wave');
+    const showBreathing = this._anim('breathing');
+    const showGradientWave = this._anim('gradient_wave');
+    const showFillTransition = this._anim('fill_transition');
+    const showShimmer = this._anim('shimmer');
+    const showDroplets = this._anim('droplets');
+    const showParticles = this._anim('particles');
+    const showConvection = this._anim('convection');
+    const showCaustics = this._anim('caustics');
+    const showElectrolysis = this._anim('electrolysis');
+
+    const fillClasses = [
+      'charge-fill',
+      !this._initialized && showFillTransition ? 'animating' : '',
+      !showFillTransition ? 'no-transition' : '',
+      showBreathing ? 'breathing' : '',
+      showGradientWave ? 'gradient-wave' : '',
+    ].filter(Boolean).join(' ');
+
+    const fillBg = showGradientWave
+      ? `linear-gradient(180deg, ${color}, ${color}cc, ${color}, ${color}ee)`
+      : `linear-gradient(0deg, ${color}, ${color}ee)`;
+
+    const bodyClasses = [
+      'battery-body',
+      this._batteryState === 'charging' ? 'charging' : '',
+      showShimmer && this._batteryState === 'charging' ? 'shimmer-on' : '',
+    ].filter(Boolean).join(' ');
+
     return html`
       <ha-card>
-        <div class="battery-wrapper ${this._mouseActive ? 'mouse-active' : ''}"
+        <div class="battery-wrapper ${this._mouseActive ? 'mouse-active' : ''} ${!this._anim('float') ? 'no-float' : ''}"
              @pointermove=${this._onPointerMove}
              @pointerleave=${this._onPointerLeave}
              @click=${this._handleTap}>
@@ -710,7 +874,7 @@ class BeautifulBatteryCard extends LitElement {
 
             <div class="drops-area">
               <div class="drops-above">
-                ${this._batteryState === 'charging' ? dropPositions.map(d => html`
+                ${showDroplets && this._batteryState === 'charging' ? dropPositions.map(d => html`
                   <div class="drop falling-in" style="
                     left: calc(${d.left} - 4px);
                     animation-delay: ${d.delay};
@@ -727,25 +891,54 @@ class BeautifulBatteryCard extends LitElement {
                   <div class="battery-cap-inner"></div>
                 </div>
 
-                <div class="battery-body ${this._batteryState === 'charging' ? 'charging' : ''}"
+                <div class="${bodyClasses}"
                      style="width:${bodyW}px; height:${bodyH}px;">
                   <div class="charge-glow"
                        style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
                   </div>
 
-                  <div class="charge-fill ${!this._initialized ? 'animating' : ''}"
-                       style="height: ${pct}%; background: linear-gradient(0deg, ${color}, ${color}ee);">
-                    <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
-                         style="fill: ${color};">
-                      <path d="${this._wavePath()}">
-                        <animate attributeName="d"
-                                 values="${this._wavePath()};${this._wavePath(1)};${this._wavePath()}"
-                                 dur="3s"
-                                 repeatCount="indefinite" />
-                      </path>
-                    </svg>
+                  <div class="${fillClasses}"
+                       style="height: ${pct}%; background: ${fillBg};">
+                    ${showWave ? html`
+                      <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                           style="fill: ${color};">
+                        <path d="${this._wavePath(0, sloshAmplitude)}">
+                          <animate attributeName="d"
+                                   values="${this._wavePath(0, sloshAmplitude)};${this._wavePath(1, sloshAmplitude)};${this._wavePath(0, sloshAmplitude)}"
+                                   dur="3s"
+                                   repeatCount="indefinite" />
+                        </path>
+                      </svg>
+                    ` : html`
+                      <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                           style="fill: ${color};">
+                        <path d="${this._wavePath(0, sloshAmplitude)}" />
+                      </svg>
+                    `}
 
-                    ${this._config.show_particles ? this._particles.map(p => html`
+                    ${showConvection && pct > 5 ? html`
+                      <svg class="convection-line" viewBox="0 0 100 100" preserveAspectRatio="none"
+                           style="width:100%;height:100%;left:0;top:0;">
+                        ${this._convectionPaths.map(c => html`
+                          <path d="${c.d}" style="animation-delay:${c.delay}s;" />
+                        `)}
+                      </svg>
+                    ` : nothing}
+
+                    ${showCaustics && pct > 5 ? html`
+                      <svg class="caustics-layer" viewBox="0 0 100 100" preserveAspectRatio="none"
+                           style="width:100%;height:${pct}%;left:0;bottom:0;position:absolute;">
+                        <filter id="caustics-filter">
+                          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="2">
+                            <animate attributeName="baseFrequency" values="0.03;0.05;0.03" dur="8s" repeatCount="indefinite" />
+                          </feTurbulence>
+                          <feDisplacementMap in="SourceGraphic" scale="8" />
+                        </filter>
+                        <rect width="100" height="100" fill="rgba(255,255,255,0.3)" filter="url(#caustics-filter)" />
+                      </svg>
+                    ` : nothing}
+
+                    ${showParticles ? this._particles.map(p => html`
                       <div class="particle" style="
                         left: ${p.x}%;
                         bottom: ${p.y}%;
@@ -755,12 +948,22 @@ class BeautifulBatteryCard extends LitElement {
                         animation-delay: ${p.delay}s;
                       "></div>
                     `) : nothing}
+
+                    ${showElectrolysis && this._batteryState === 'charging' ? this._sparks.map(s => html`
+                      <div class="electrolysis-spark" style="
+                        left: ${s.x}%;
+                        bottom: ${s.y}%;
+                        width: ${s.size}px;
+                        height: ${s.size}px;
+                        animation-delay: ${s.delay}s;
+                      "></div>
+                    `) : nothing}
                   </div>
                 </div>
               </div>
 
               <div class="drops-below">
-                ${this._batteryState === 'discharging' && pct > 5 ? dropPositions.map(d => html`
+                ${showDroplets && this._batteryState === 'discharging' && pct > 5 ? dropPositions.map(d => html`
                   <div class="drop draining-out" style="
                     left: calc(${d.left} - 4px);
                     animation-delay: ${d.delay};
@@ -796,10 +999,10 @@ class BeautifulBatteryCard extends LitElement {
     `;
   }
 
-  private _wavePath(offset = 0): string {
+  private _wavePath(offset = 0, amplitude = 1): string {
     const pts: string[] = [];
     for (let x = 0; x <= 100; x += 2) {
-      const y = 8 + Math.sin((x + offset * 50) * 0.08) * 4 + Math.sin((x + offset * 30) * 0.15) * 2;
+      const y = 8 + (Math.sin((x + offset * 50) * 0.08) * 4 + Math.sin((x + offset * 30) * 0.15) * 2) * amplitude;
       pts.push(`${x},${y.toFixed(1)}`);
     }
     return `M0,16 L${pts.join(' L')} L100,16 Z`;

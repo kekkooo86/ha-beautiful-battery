@@ -1,7 +1,23 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import type { BatteryConfig } from '../types/config';
+import type { BatteryConfig, AnimationConfig } from '../types/config';
 import type { HomeAssistant } from '../types/hass';
+
+const DEFAULT_ANIMATIONS: AnimationConfig = {
+  float: true,
+  tilt_3d: true,
+  wave: true,
+  fill_transition: true,
+  shimmer: true,
+  droplets: true,
+  particles: true,
+  convection: true,
+  caustics: true,
+  breathing: true,
+  sloshing: true,
+  electrolysis: true,
+  gradient_wave: true,
+};
 
 const DEFAULT_EDITOR_CONFIG: BatteryConfig = {
   type: 'custom:beautiful-battery',
@@ -11,6 +27,7 @@ const DEFAULT_EDITOR_CONFIG: BatteryConfig = {
   show_power: false,
   show_status: true,
   show_particles: true,
+  animations: { ...DEFAULT_ANIMATIONS },
   charge_colors: { low: '#ff4444', mid: '#ffaa00', high: '#44cc44', full: '#00ddff' },
   size: 'medium',
   glow_intensity: 0.8,
@@ -55,6 +72,22 @@ const STRINGS: Record<string, Record<string, string>> = {
     color_mid: 'Medio 25%',
     color_high: 'Alto 50%',
     color_full: 'Pieno 85%',
+    animations: 'Animazioni',
+    anim_all_on: 'Attiva tutte',
+    anim_all_off: 'Disattiva tutte',
+    anim_float: 'Galleggiamento',
+    anim_tilt_3d: 'Inclinazione 3D (mouse)',
+    anim_wave: 'Onda superficie',
+    anim_fill_transition: 'Transizione riempimento',
+    anim_shimmer: 'Riflesso in carica',
+    anim_droplets: 'Gocce carica/scarica',
+    anim_particles: 'Particelle (bolle)',
+    anim_convection: 'Correnti di convezione',
+    anim_caustics: 'Caustiche luminose',
+    anim_breathing: 'Respiro liquido',
+    anim_sloshing: 'Sciabordio reattivo',
+    anim_electrolysis: 'Elettrolisi (in carica)',
+    anim_gradient_wave: 'Onda di colore',
   },
   en: {
     entity: 'Entity',
@@ -89,6 +122,22 @@ const STRINGS: Record<string, Record<string, string>> = {
     color_mid: 'Mid 25%',
     color_high: 'High 50%',
     color_full: 'Full 85%',
+    animations: 'Animations',
+    anim_all_on: 'Enable all',
+    anim_all_off: 'Disable all',
+    anim_float: 'Float',
+    anim_tilt_3d: '3D tilt (mouse)',
+    anim_wave: 'Surface wave',
+    anim_fill_transition: 'Fill transition',
+    anim_shimmer: 'Charging shimmer',
+    anim_droplets: 'Charge/discharge droplets',
+    anim_particles: 'Particles (bubbles)',
+    anim_convection: 'Convection currents',
+    anim_caustics: 'Caustic light',
+    anim_breathing: 'Liquid breathing',
+    anim_sloshing: 'Reactive sloshing',
+    anim_electrolysis: 'Electrolysis (charging)',
+    anim_gradient_wave: 'Color wave',
   },
 };
 
@@ -184,13 +233,35 @@ class BeautifulBatteryEditor extends LitElement {
       min-width: 40px;
       text-align: right;
     }
+    .anim-bulk {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .anim-bulk-btn {
+      flex: 1;
+      padding: 6px 12px;
+      border: 1px solid var(--divider-color);
+      border-radius: 8px;
+      background: var(--card-background-color);
+      color: var(--primary-color);
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .anim-bulk-btn:hover {
+      background: var(--secondary-background-color);
+    }
   `;
 
   @property({ attribute: false }) hass?: HomeAssistant;
   @state() private _config: BatteryConfig = { ...DEFAULT_EDITOR_CONFIG };
 
   setConfig(config: Record<string, unknown>) {
-    this._config = { ...DEFAULT_EDITOR_CONFIG, ...config } as BatteryConfig;
+    const merged = { ...DEFAULT_EDITOR_CONFIG, ...config } as BatteryConfig;
+    merged.animations = { ...DEFAULT_ANIMATIONS, ...(config.animations as Partial<AnimationConfig> ?? {}) };
+    this._config = merged;
   }
 
   private _t(key: string): string {
@@ -292,12 +363,27 @@ class BeautifulBatteryEditor extends LitElement {
               ></ha-selector>
             </div>
           ` : ''}
-          <div class="toggle-row">
-            <div><div class="toggle-label">${this._t('show_particles')}</div></div>
-            <ha-switch .checked=${this._config.show_particles}
-              @change=${(e: Event) => this._update('show_particles', (e.target as HTMLInputElement).checked)}
-            ></ha-switch>
+        </section>
+
+        <section class="section">
+          <div class="section-title">${this._t('animations')}</div>
+          <div class="anim-bulk">
+            <button class="anim-bulk-btn" @click=${() => this._setAllAnimations(true)}>${this._t('anim_all_on')}</button>
+            <button class="anim-bulk-btn" @click=${() => this._setAllAnimations(false)}>${this._t('anim_all_off')}</button>
           </div>
+          ${this._renderAnimToggle('float', 'anim_float')}
+          ${this._renderAnimToggle('tilt_3d', 'anim_tilt_3d')}
+          ${this._renderAnimToggle('wave', 'anim_wave')}
+          ${this._renderAnimToggle('fill_transition', 'anim_fill_transition')}
+          ${this._renderAnimToggle('shimmer', 'anim_shimmer')}
+          ${this._renderAnimToggle('droplets', 'anim_droplets')}
+          ${this._renderAnimToggle('particles', 'anim_particles')}
+          ${this._renderAnimToggle('convection', 'anim_convection')}
+          ${this._renderAnimToggle('caustics', 'anim_caustics')}
+          ${this._renderAnimToggle('breathing', 'anim_breathing')}
+          ${this._renderAnimToggle('sloshing', 'anim_sloshing')}
+          ${this._renderAnimToggle('electrolysis', 'anim_electrolysis')}
+          ${this._renderAnimToggle('gradient_wave', 'anim_gradient_wave')}
         </section>
 
         <section class="section">
@@ -385,6 +471,38 @@ class BeautifulBatteryEditor extends LitElement {
 
   private _updateTapAction(action: string) {
     this._config = { ...this._config, tap_action: { action: action as BatteryConfig['tap_action']['action'] } };
+    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
+  }
+
+  private _renderAnimToggle(key: keyof AnimationConfig, labelKey: string) {
+    return html`
+      <div class="toggle-row">
+        <div><div class="toggle-label">${this._t(labelKey)}</div></div>
+        <ha-switch .checked=${this._config.animations[key]}
+          @change=${(e: Event) => this._updateAnimation(key, (e.target as HTMLInputElement).checked)}
+        ></ha-switch>
+      </div>
+    `;
+  }
+
+  private _updateAnimation(key: keyof AnimationConfig, value: boolean) {
+    this._config = {
+      ...this._config,
+      animations: { ...this._config.animations, [key]: value },
+      show_particles: this._config.animations.particles,
+    };
+    if (key === 'particles') {
+      this._config.show_particles = value;
+    }
+    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
+  }
+
+  private _setAllAnimations(value: boolean) {
+    const animations = {} as AnimationConfig;
+    for (const key of Object.keys(DEFAULT_ANIMATIONS) as Array<keyof AnimationConfig>) {
+      animations[key] = value;
+    }
+    this._config = { ...this._config, animations, show_particles: value };
     this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
   }
 }
