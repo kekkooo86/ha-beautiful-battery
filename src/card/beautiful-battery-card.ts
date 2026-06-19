@@ -29,9 +29,9 @@ const DEFAULT_CONFIG: BatteryConfig = {
 
 const SIZE_MAP = { small: 140, medium: 200, large: 260 };
 
-const STRINGS: Record<string, { charging: string; discharging: string; full: string; empty: string }> = {
-  it: { charging: 'In carica', discharging: 'Scarica', full: 'Piena', empty: 'Vuota' },
-  en: { charging: 'Charging', discharging: 'Discharging', full: 'Full', empty: 'Empty' },
+const STRINGS: Record<string, { charging: string; discharging: string; idle: string; full: string; empty: string }> = {
+  it: { charging: 'In carica', discharging: 'In scarica', idle: 'Inattiva', full: 'Piena', empty: 'Vuota' },
+  en: { charging: 'Charging', discharging: 'Discharging', idle: 'Idle', full: 'Full', empty: 'Empty' },
 };
 
 function clamp(v: number, min: number, max: number) {
@@ -484,6 +484,7 @@ class BeautifulBatteryCard extends LitElement {
   @state() private _chargePercent = 0;
   @state() private _displayPercent = 0;
   @state() private _isCharging = false;
+  @state() private _batteryState: 'charging' | 'discharging' | 'idle' = 'idle';
   @state() private _mouseX = 0;
   @state() private _mouseY = 0;
   @state() private _mouseActive = false;
@@ -526,9 +527,26 @@ class BeautifulBatteryCard extends LitElement {
       this._chargePercent = clamp(Number.isFinite(level) ? level : 0, 0, 100);
     }
 
-    this._isCharging = entity.state === 'charging' ||
-      (typeof entity.attributes?.battery_charging === 'boolean' && entity.attributes.battery_charging) ||
-      entity.attributes?.charging === true;
+    const power = this._getEntityState(this._config.power_entity);
+    
+    if (power !== null) {
+      const absPower = Math.abs(power);
+      if (absPower < 5) {
+        this._batteryState = 'idle';
+        this._isCharging = false;
+      } else if (power < 0) {
+        this._batteryState = 'charging';
+        this._isCharging = true;
+      } else {
+        this._batteryState = 'discharging';
+        this._isCharging = false;
+      }
+    } else {
+      this._isCharging = entity.state === 'charging' ||
+        (typeof entity.attributes?.battery_charging === 'boolean' && entity.attributes.battery_charging) ||
+        entity.attributes?.charging === true;
+      this._batteryState = this._isCharging ? 'charging' : 'discharging';
+    }
 
     this._isDark = this.hass.themes?.darkMode !== false;
 
@@ -563,7 +581,8 @@ class BeautifulBatteryCard extends LitElement {
   private _getStatusLabel(): string {
     const lang = this._getLang();
     const t = STRINGS[lang] ?? STRINGS.en;
-    if (this._isCharging) return t.charging;
+    if (this._batteryState === 'charging') return t.charging;
+    if (this._batteryState === 'idle') return t.idle;
     if (this._chargePercent >= 100) return t.full;
     if (this._chargePercent <= 0) return t.empty;
     return t.discharging;
@@ -623,10 +642,69 @@ class BeautifulBatteryCard extends LitElement {
     }
   }
 
+  private _renderPlaceholder() {
+    const isSolid = this._config?.theme === 'solid';
+    const size = SIZE_MAP[this._config?.size ?? 'medium'];
+    const bodyW = size * 0.45;
+    const bodyH = size;
+    const capW = bodyW * 0.35;
+    const capH = 12;
+    const color = this._getColor();
+    const glowIntensity = clamp(this._config?.glow_intensity ?? 0.8, 0, 1);
+
+    return html`
+      <ha-card>
+        <div class="battery-wrapper">
+          <div class="battery-outer" style="transform: rotateX(2deg) rotateY(0deg);">
+            <div class="drops-area">
+              <div class="drops-above"></div>
+              <div>
+                <div class="battery-cap ${isSolid ? 'solid-theme' : ''}"
+                     style="width:${capW}px; height:${capH}px;">
+                  <div class="battery-cap-inner"></div>
+                </div>
+                <div class="battery-body ${isSolid ? 'solid-theme' : ''}"
+                     style="width:${bodyW}px; height:${bodyH}px;">
+                  <div class="charge-glow"
+                       style="height: 50%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
+                  </div>
+                  <div class="charge-fill"
+                       style="height: 50%; background: linear-gradient(0deg, ${color}, ${color}ee);">
+                    <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
+                         style="fill: ${color};">
+                      <path d="${this._wavePath()}">
+                        <animate attributeName="d"
+                                 values="${this._wavePath()};${this._wavePath(1)};${this._wavePath()}"
+                                 dur="3s"
+                                 repeatCount="indefinite" />
+                      </path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="drops-below"></div>
+            </div>
+          </div>
+          <div class="battery-info">
+            <span class="battery-name">Select an entity</span>
+            ${this._config?.show_percentage !== false ? html`
+              <span class="battery-percentage" style="color: ${color};">50%</span>
+            ` : nothing}
+          </div>
+        </div>
+      </ha-card>
+    `;
+  }
+
   render() {
     if (!this._config) return html``;
     const entity = this.hass?.states[this._config.entity];
-    if (!entity) return html`<ha-card><div class="battery-wrapper"><p>Entity not found</p></div></ha-card>`;
+    if (!entity) {
+      if (!this._config.entity) {
+        return this._renderPlaceholder();
+      }
+      return html`<ha-card><div class="battery-wrapper"><p>Entity not found</p></div></ha-card>`;
+    }
 
     const pct = this._displayPercent;
     const color = this._getColor();
@@ -662,7 +740,7 @@ class BeautifulBatteryCard extends LitElement {
 
             <div class="drops-area">
               <div class="drops-above">
-                ${this._isCharging ? dropPositions.map(d => html`
+                ${this._batteryState === 'charging' ? dropPositions.map(d => html`
                   <div class="drop falling-in" style="
                     left: calc(${d.left} - 4px);
                     animation-delay: ${d.delay};
@@ -679,7 +757,7 @@ class BeautifulBatteryCard extends LitElement {
                   <div class="battery-cap-inner"></div>
                 </div>
 
-                <div class="battery-body ${this._isCharging ? 'charging' : ''} ${isSolid ? 'solid-theme' : ''}"
+                <div class="battery-body ${this._batteryState === 'charging' ? 'charging' : ''} ${isSolid ? 'solid-theme' : ''}"
                      style="width:${bodyW}px; height:${bodyH}px;">
                   <div class="charge-glow"
                        style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
@@ -712,7 +790,7 @@ class BeautifulBatteryCard extends LitElement {
               </div>
 
               <div class="drops-below">
-                ${!this._isCharging && pct > 5 ? dropPositions.map(d => html`
+                ${this._batteryState === 'discharging' && pct > 5 ? dropPositions.map(d => html`
                   <div class="drop draining-out" style="
                     left: calc(${d.left} - 4px);
                     animation-delay: ${d.delay};
