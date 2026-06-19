@@ -34,6 +34,7 @@ const DEFAULT_EDITOR_CONFIG: BatteryConfig = {
   tap_action: { action: 'more-info' },
   language: 'auto',
   test_override: null,
+  test_state: null,
   voltage_entity: '',
   power_entity: '',
 };
@@ -88,6 +89,11 @@ const STRINGS: Record<string, Record<string, string>> = {
     anim_sloshing: 'Sciabordio reattivo',
     anim_electrolysis: 'Elettrolisi (in carica)',
     anim_gradient_wave: 'Onda di colore',
+    test_state: 'Simula stato batteria',
+    test_state_off: 'Disabilitato (usa entita)',
+    test_state_charging: 'In carica',
+    test_state_discharging: 'In scarica',
+    test_state_idle: 'Inattiva',
   },
   en: {
     entity: 'Entity',
@@ -138,6 +144,11 @@ const STRINGS: Record<string, Record<string, string>> = {
     anim_sloshing: 'Reactive sloshing',
     anim_electrolysis: 'Electrolysis (charging)',
     anim_gradient_wave: 'Color wave',
+    test_state: 'Simulate battery state',
+    test_state_off: 'Disabled (using entity)',
+    test_state_charging: 'Charging',
+    test_state_discharging: 'Discharging',
+    test_state_idle: 'Idle',
   },
 };
 
@@ -427,6 +438,19 @@ class BeautifulBatteryEditor extends LitElement {
                      @input=${(e: Event) => this._update('test_override', Number((e.target as HTMLInputElement).value))} />
               <span class="value">${this._config.test_override != null ? this._config.test_override + '%' : 'Off'}</span>
             </div>
+          </div>
+          <div class="field">
+            <label class="field-label">${this._t('test_state')}</label>
+            <select .value=${this._config.test_state ?? ''}
+                    @change=${(e: Event) => {
+                      const val = (e.target as HTMLSelectElement).value;
+                      this._update('test_state', val === '' ? null : val);
+                    }}>
+              <option value="">${this._t('test_state_off')}</option>
+              <option value="charging">${this._t('test_state_charging')}</option>
+              <option value="discharging">${this._t('test_state_discharging')}</option>
+              <option value="idle">${this._t('test_state_idle')}</option>
+            </select>
           </div>
         </section>
 

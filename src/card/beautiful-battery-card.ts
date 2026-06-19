@@ -39,6 +39,7 @@ const DEFAULT_CONFIG: BatteryConfig = {
   tap_action: { action: 'more-info' },
   language: 'auto',
   test_override: null,
+  test_state: null,
   voltage_entity: '',
   power_entity: '',
 };
@@ -597,25 +598,29 @@ class BeautifulBatteryCard extends LitElement {
       this._chargePercent = clamp(Number.isFinite(level) ? level : 0, 0, 100);
     }
 
-    const power = this._getEntityState(this._config.power_entity);
-    
-    if (power !== null) {
-      const absPower = Math.abs(power);
-      if (absPower < 5) {
-        this._batteryState = 'idle';
-        this._isCharging = false;
-      } else if (power < 0) {
-        this._batteryState = 'charging';
-        this._isCharging = true;
-      } else {
-        this._batteryState = 'discharging';
-        this._isCharging = false;
-      }
+    if (this._config.test_state) {
+      this._batteryState = this._config.test_state;
+      this._isCharging = this._config.test_state === 'charging';
     } else {
-      this._isCharging = entity.state === 'charging' ||
-        (typeof entity.attributes?.battery_charging === 'boolean' && entity.attributes.battery_charging) ||
-        entity.attributes?.charging === true;
-      this._batteryState = this._isCharging ? 'charging' : 'discharging';
+      const power = this._getEntityState(this._config.power_entity);
+      if (power !== null) {
+        const absPower = Math.abs(power);
+        if (absPower < 5) {
+          this._batteryState = 'idle';
+          this._isCharging = false;
+        } else if (power < 0) {
+          this._batteryState = 'charging';
+          this._isCharging = true;
+        } else {
+          this._batteryState = 'discharging';
+          this._isCharging = false;
+        }
+      } else {
+        this._isCharging = entity.state === 'charging' ||
+          (typeof entity.attributes?.battery_charging === 'boolean' && entity.attributes.battery_charging) ||
+          entity.attributes?.charging === true;
+        this._batteryState = this._isCharging ? 'charging' : 'discharging';
+      }
     }
 
     this._isDark = this.hass.themes?.darkMode !== false;

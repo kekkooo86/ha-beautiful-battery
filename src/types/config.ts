@@ -42,6 +42,7 @@ export interface BatteryConfig {
   tap_action: TapAction;
   language: 'auto' | 'it' | 'en';
   test_override: number | null;
+  test_state: 'charging' | 'discharging' | 'idle' | null;
   voltage_entity: string;
   power_entity: string;
 }
