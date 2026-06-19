@@ -6,7 +6,6 @@ import type { HomeAssistant } from '../types/hass';
 const DEFAULT_CONFIG: BatteryConfig = {
   type: 'custom:beautiful-battery',
   entity: '',
-  theme: 'liquid-glass',
   show_percentage: true,
   show_voltage: false,
   show_power: false,
@@ -255,33 +254,6 @@ class BeautifulBatteryCard extends LitElement {
       filter: blur(3px);
       pointer-events: none;
       z-index: 4;
-    }
-
-    .battery-body.solid-theme {
-      background: linear-gradient(135deg, #3a3a40 0%, #252528 50%, #1a1a1d 100%);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-    }
-
-    .battery-body.solid-theme::before {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
-    }
-
-    .battery-body.solid-theme::after {
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .battery-cap.solid-theme .battery-cap-inner {
-      background: linear-gradient(180deg, #3a3a40 0%, #2a2a2e 100%);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .charge-glow {
@@ -643,7 +615,6 @@ class BeautifulBatteryCard extends LitElement {
   }
 
   private _renderPlaceholder() {
-    const isSolid = this._config?.theme === 'solid';
     const size = SIZE_MAP[this._config?.size ?? 'medium'];
     const bodyW = size * 0.45;
     const bodyH = size;
@@ -659,11 +630,11 @@ class BeautifulBatteryCard extends LitElement {
             <div class="drops-area">
               <div class="drops-above"></div>
               <div>
-                <div class="battery-cap ${isSolid ? 'solid-theme' : ''}"
+                <div class="battery-cap"
                      style="width:${capW}px; height:${capH}px;">
                   <div class="battery-cap-inner"></div>
                 </div>
-                <div class="battery-body ${isSolid ? 'solid-theme' : ''}"
+                <div class="battery-body"
                      style="width:${bodyW}px; height:${bodyH}px;">
                   <div class="charge-glow"
                        style="height: 50%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">
@@ -708,7 +679,6 @@ class BeautifulBatteryCard extends LitElement {
 
     const pct = this._displayPercent;
     const color = this._getColor();
-    const isSolid = this._config.theme === 'solid';
     const size = SIZE_MAP[this._config.size];
     const bodyW = size * 0.45;
     const bodyH = size;
@@ -752,12 +722,12 @@ class BeautifulBatteryCard extends LitElement {
               </div>
 
               <div>
-                <div class="battery-cap ${isSolid ? 'solid-theme' : ''}"
+                <div class="battery-cap"
                      style="width:${capW}px; height:${capH}px;">
                   <div class="battery-cap-inner"></div>
                 </div>
 
-                <div class="battery-body ${this._batteryState === 'charging' ? 'charging' : ''} ${isSolid ? 'solid-theme' : ''}"
+                <div class="battery-body ${this._batteryState === 'charging' ? 'charging' : ''}"
                      style="width:${bodyW}px; height:${bodyH}px;">
                   <div class="charge-glow"
                        style="height: ${pct}%; background: ${color}; opacity: ${glowIntensity}; filter: blur(${12 + glowIntensity * 20}px); box-shadow: 0 0 ${20 + glowIntensity * 30}px ${color};">

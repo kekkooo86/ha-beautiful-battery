@@ -9,7 +9,6 @@ export interface BatteryConfig {
   type: string;
   entity: string;
   name?: string;
-  theme: 'liquid-glass' | 'solid';
   show_percentage: boolean;
   show_voltage: boolean;
   show_power: boolean;

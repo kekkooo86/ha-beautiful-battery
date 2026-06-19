@@ -6,7 +6,6 @@ import type { HomeAssistant } from '../types/hass';
 const DEFAULT_EDITOR_CONFIG: BatteryConfig = {
   type: 'custom:beautiful-battery',
   entity: '',
-  theme: 'liquid-glass',
   show_percentage: true,
   show_voltage: false,
   show_power: false,
@@ -28,9 +27,6 @@ const STRINGS: Record<string, Record<string, string>> = {
     battery_sensor: 'Sensore batteria',
     display_name: 'Nome visualizzato',
     appearance: 'Aspetto',
-    theme: 'Tema',
-    theme_liquid: 'Vetro liquido',
-    theme_solid: 'Solido',
     size: 'Dimensione',
     size_small: 'Piccolo (140px)',
     size_medium: 'Medio (200px)',
@@ -65,9 +61,6 @@ const STRINGS: Record<string, Record<string, string>> = {
     battery_sensor: 'Battery sensor',
     display_name: 'Display name',
     appearance: 'Appearance',
-    theme: 'Theme',
-    theme_liquid: 'Liquid Glass',
-    theme_solid: 'Solid',
     size: 'Size',
     size_small: 'Small (140px)',
     size_medium: 'Medium (200px)',
@@ -233,14 +226,6 @@ class BeautifulBatteryEditor extends LitElement {
 
         <section class="section">
           <div class="section-title">${this._t('appearance')}</div>
-          <div class="field">
-            <label class="field-label">${this._t('theme')}</label>
-            <select .value=${this._config.theme}
-                    @change=${(e: Event) => this._update('theme', (e.target as HTMLSelectElement).value)}>
-              <option value="liquid-glass">${this._t('theme_liquid')}</option>
-              <option value="solid">${this._t('theme_solid')}</option>
-            </select>
-          </div>
           <div class="field">
             <label class="field-label">${this._t('size')}</label>
             <select .value=${this._config.size}
