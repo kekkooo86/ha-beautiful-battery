@@ -6,6 +6,8 @@
 A 3D liquid glass battery card for Home Assistant with realistic liquid fill, glass effects, and mouse-interactive sloshing.
 
 ![Beautiful Battery](img_1.png)
+![Beautiful Battery](img_2.png)
+![Beautiful Battery](img_3.png)
 
 ## Features
 
