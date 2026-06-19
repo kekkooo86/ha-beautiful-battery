@@ -81,7 +81,6 @@ class BeautifulBatteryCard extends LitElement {
       align-items: center;
       justify-content: center;
       gap: 0;
-      padding: 20px;
       perspective: 800px;
       cursor: pointer;
       user-select: none;
