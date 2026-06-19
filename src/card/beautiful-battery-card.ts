@@ -5,18 +5,7 @@ import type { HomeAssistant } from '../types/hass';
 
 const DEFAULT_ANIMATIONS: AnimationConfig = {
   float: true,
-  tilt_3d: true,
-  wave: true,
-  fill_transition: true,
-  shimmer: true,
-  droplets: true,
-  particles: true,
-  convection: true,
-  caustics: true,
-  breathing: true,
-  sloshing: true,
-  electrolysis: true,
-  gradient_wave: true,
+  liquid_movement: true,
 };
 
 const DEFAULT_CONFIG: BatteryConfig = {
@@ -26,7 +15,6 @@ const DEFAULT_CONFIG: BatteryConfig = {
   show_voltage: false,
   show_power: false,
   show_status: true,
-  show_particles: true,
   animations: { ...DEFAULT_ANIMATIONS },
   charge_colors: {
     low: '#ff4444',
@@ -581,7 +569,7 @@ class BeautifulBatteryCard extends LitElement {
     if (changed.has('hass')) {
       this._syncState();
     }
-    if (changed.has('_chargePercent') && this._anim('particles')) {
+    if (changed.has('_chargePercent') && this._anim('liquid_movement')) {
       this._generateParticles();
     }
   }
@@ -700,7 +688,7 @@ class BeautifulBatteryCard extends LitElement {
   }
 
   private _onPointerMove(e: PointerEvent) {
-    if (!this._anim('tilt_3d')) return;
+    if (!this._anim('liquid_movement')) return;
     const rect = this.shadowRoot?.querySelector('.battery-wrapper') as HTMLElement;
     if (!rect) return;
     const bounds = rect.getBoundingClientRect();
@@ -769,7 +757,7 @@ class BeautifulBatteryCard extends LitElement {
                   </div>
                   <div class="charge-fill"
                        style="height: 50%; background: linear-gradient(0deg, ${color}, ${color}ee);">
-                    ${this._anim('wave') ? html`
+                    ${this._anim('liquid_movement') ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
                         <path d="${this._wavePath()}">
@@ -824,11 +812,11 @@ class BeautifulBatteryCard extends LitElement {
     const voltage = this._getEntityState(this._config.voltage_entity);
     const power = this._getEntityState(this._config.power_entity);
 
-    const tiltActive = this._anim('tilt_3d');
-    const rotateX = tiltActive && this._mouseActive ? clamp(this._mouseY * -15, -12, 12) : 0;
-    const rotateY = tiltActive && this._mouseActive ? clamp(this._mouseX * 15, -12, 12) : 0;
+    const liquidOn = this._anim('liquid_movement');
+    const rotateX = liquidOn && this._mouseActive ? clamp(this._mouseY * -15, -12, 12) : 0;
+    const rotateY = liquidOn && this._mouseActive ? clamp(this._mouseX * 15, -12, 12) : 0;
 
-    const sloshAmplitude = this._anim('sloshing') && this._mouseActive
+    const sloshAmplitude = liquidOn && this._mouseActive
       ? 1 + Math.abs(this._mouseX) * 2 + Math.abs(this._mouseY) * 1.5
       : 1;
 
@@ -840,33 +828,22 @@ class BeautifulBatteryCard extends LitElement {
       { left: '70%', delay: '1.2s' },
     ];
 
-    const showWave = this._anim('wave');
-    const showBreathing = this._anim('breathing');
-    const showGradientWave = this._anim('gradient_wave');
-    const showFillTransition = this._anim('fill_transition');
-    const showShimmer = this._anim('shimmer');
-    const showDroplets = this._anim('droplets');
-    const showParticles = this._anim('particles');
-    const showConvection = this._anim('convection');
-    const showCaustics = this._anim('caustics');
-    const showElectrolysis = this._anim('electrolysis');
-
     const fillClasses = [
       'charge-fill',
-      !this._initialized && showFillTransition ? 'animating' : '',
-      !showFillTransition ? 'no-transition' : '',
-      showBreathing ? 'breathing' : '',
-      showGradientWave ? 'gradient-wave' : '',
+      !this._initialized && liquidOn ? 'animating' : '',
+      !liquidOn ? 'no-transition' : '',
+      liquidOn ? 'breathing' : '',
+      liquidOn ? 'gradient-wave' : '',
     ].filter(Boolean).join(' ');
 
-    const fillBg = showGradientWave
+    const fillBg = liquidOn
       ? `linear-gradient(180deg, ${color}, ${color}cc, ${color}, ${color}ee)`
       : `linear-gradient(0deg, ${color}, ${color}ee)`;
 
     const bodyClasses = [
       'battery-body',
       this._batteryState === 'charging' ? 'charging' : '',
-      showShimmer && this._batteryState === 'charging' ? 'shimmer-on' : '',
+      liquidOn && this._batteryState === 'charging' ? 'shimmer-on' : '',
     ].filter(Boolean).join(' ');
 
     return html`
@@ -879,7 +856,7 @@ class BeautifulBatteryCard extends LitElement {
 
             <div class="drops-area">
               <div class="drops-above">
-                ${showDroplets && this._batteryState === 'charging' ? dropPositions.map(d => html`
+                ${liquidOn && this._batteryState === 'charging' ? dropPositions.map(d => html`
                   <div class="drop falling-in" style="
                     left: calc(${d.left} - 4px);
                     animation-delay: ${d.delay};
@@ -904,7 +881,7 @@ class BeautifulBatteryCard extends LitElement {
 
                   <div class="${fillClasses}"
                        style="height: ${pct}%; background: ${fillBg};">
-                    ${showWave ? html`
+                    ${liquidOn ? html`
                       <svg class="liquid-wave" viewBox="0 0 100 16" preserveAspectRatio="none"
                            style="fill: ${color};">
                         <path d="${this._wavePath(0, sloshAmplitude)}">
@@ -921,7 +898,7 @@ class BeautifulBatteryCard extends LitElement {
                       </svg>
                     `}
 
-                    ${showConvection && pct > 5 ? html`
+                    ${liquidOn && pct > 5 ? html`
                       <svg class="convection-line" viewBox="0 0 100 100" preserveAspectRatio="none"
                            style="width:100%;height:100%;left:0;top:0;">
                         ${this._convectionPaths.map(c => html`
@@ -930,7 +907,7 @@ class BeautifulBatteryCard extends LitElement {
                       </svg>
                     ` : nothing}
 
-                    ${showCaustics && pct > 5 ? html`
+                    ${liquidOn && pct > 5 ? html`
                       <svg class="caustics-layer" viewBox="0 0 100 100" preserveAspectRatio="none"
                            style="width:100%;height:${pct}%;left:0;bottom:0;position:absolute;">
                         <filter id="caustics-filter">
@@ -943,7 +920,7 @@ class BeautifulBatteryCard extends LitElement {
                       </svg>
                     ` : nothing}
 
-                    ${showParticles ? this._particles.map(p => html`
+                    ${liquidOn ? this._particles.map(p => html`
                       <div class="particle" style="
                         left: ${p.x}%;
                         bottom: ${p.y}%;
@@ -954,7 +931,7 @@ class BeautifulBatteryCard extends LitElement {
                       "></div>
                     `) : nothing}
 
-                    ${showElectrolysis && this._batteryState === 'charging' ? this._sparks.map(s => html`
+                    ${liquidOn && this._batteryState === 'charging' ? this._sparks.map(s => html`
                       <div class="electrolysis-spark" style="
                         left: ${s.x}%;
                         bottom: ${s.y}%;
@@ -968,7 +945,7 @@ class BeautifulBatteryCard extends LitElement {
               </div>
 
               <div class="drops-below">
-                ${showDroplets && this._batteryState === 'discharging' && pct > 5 ? dropPositions.map(d => html`
+                ${liquidOn && this._batteryState === 'discharging' && pct > 5 ? dropPositions.map(d => html`
                   <div class="drop draining-out" style="
                     left: calc(${d.left} - 4px);
                     animation-delay: ${d.delay};

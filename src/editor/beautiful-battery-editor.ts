@@ -5,18 +5,7 @@ import type { HomeAssistant } from '../types/hass';
 
 const DEFAULT_ANIMATIONS: AnimationConfig = {
   float: true,
-  tilt_3d: true,
-  wave: true,
-  fill_transition: true,
-  shimmer: true,
-  droplets: true,
-  particles: true,
-  convection: true,
-  caustics: true,
-  breathing: true,
-  sloshing: true,
-  electrolysis: true,
-  gradient_wave: true,
+  liquid_movement: true,
 };
 
 const DEFAULT_EDITOR_CONFIG: BatteryConfig = {
@@ -26,7 +15,6 @@ const DEFAULT_EDITOR_CONFIG: BatteryConfig = {
   show_voltage: false,
   show_power: false,
   show_status: true,
-  show_particles: true,
   animations: { ...DEFAULT_ANIMATIONS },
   charge_colors: { low: '#ff4444', mid: '#ffaa00', high: '#44cc44', full: '#00ddff' },
   size: 'medium',
@@ -74,21 +62,8 @@ const STRINGS: Record<string, Record<string, string>> = {
     color_high: 'Alto 50%',
     color_full: 'Pieno 85%',
     animations: 'Animazioni',
-    anim_all_on: 'Attiva tutte',
-    anim_all_off: 'Disattiva tutte',
-    anim_float: 'Galleggiamento',
-    anim_tilt_3d: 'Inclinazione 3D (mouse)',
-    anim_wave: 'Onda superficie',
-    anim_fill_transition: 'Transizione riempimento',
-    anim_shimmer: 'Riflesso in carica',
-    anim_droplets: 'Gocce carica/scarica',
-    anim_particles: 'Particelle (bolle)',
-    anim_convection: 'Correnti di convezione',
-    anim_caustics: 'Caustiche luminose',
-    anim_breathing: 'Respiro liquido',
-    anim_sloshing: 'Sciabordio reattivo',
-    anim_electrolysis: 'Elettrolisi (in carica)',
-    anim_gradient_wave: 'Onda di colore',
+    anim_float: 'Animazione galleggiamento',
+    anim_liquid: 'Animazione movimento liquido',
     test_state: 'Simula stato batteria',
     test_state_off: 'Disabilitato (usa entita)',
     test_state_charging: 'In carica',
@@ -129,21 +104,8 @@ const STRINGS: Record<string, Record<string, string>> = {
     color_high: 'High 50%',
     color_full: 'Full 85%',
     animations: 'Animations',
-    anim_all_on: 'Enable all',
-    anim_all_off: 'Disable all',
-    anim_float: 'Float',
-    anim_tilt_3d: '3D tilt (mouse)',
-    anim_wave: 'Surface wave',
-    anim_fill_transition: 'Fill transition',
-    anim_shimmer: 'Charging shimmer',
-    anim_droplets: 'Charge/discharge droplets',
-    anim_particles: 'Particles (bubbles)',
-    anim_convection: 'Convection currents',
-    anim_caustics: 'Caustic light',
-    anim_breathing: 'Liquid breathing',
-    anim_sloshing: 'Reactive sloshing',
-    anim_electrolysis: 'Electrolysis (charging)',
-    anim_gradient_wave: 'Color wave',
+    anim_float: 'Float animation',
+    anim_liquid: 'Liquid movement animation',
     test_state: 'Simulate battery state',
     test_state_off: 'Disabled (using entity)',
     test_state_charging: 'Charging',
@@ -243,26 +205,6 @@ class BeautifulBatteryEditor extends LitElement {
       color: var(--secondary-text-color);
       min-width: 40px;
       text-align: right;
-    }
-    .anim-bulk {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .anim-bulk-btn {
-      flex: 1;
-      padding: 6px 12px;
-      border: 1px solid var(--divider-color);
-      border-radius: 8px;
-      background: var(--card-background-color);
-      color: var(--primary-color);
-      font-size: 12px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .anim-bulk-btn:hover {
-      background: var(--secondary-background-color);
     }
   `;
 
@@ -378,23 +320,8 @@ class BeautifulBatteryEditor extends LitElement {
 
         <section class="section">
           <div class="section-title">${this._t('animations')}</div>
-          <div class="anim-bulk">
-            <button class="anim-bulk-btn" @click=${() => this._setAllAnimations(true)}>${this._t('anim_all_on')}</button>
-            <button class="anim-bulk-btn" @click=${() => this._setAllAnimations(false)}>${this._t('anim_all_off')}</button>
-          </div>
           ${this._renderAnimToggle('float', 'anim_float')}
-          ${this._renderAnimToggle('tilt_3d', 'anim_tilt_3d')}
-          ${this._renderAnimToggle('wave', 'anim_wave')}
-          ${this._renderAnimToggle('fill_transition', 'anim_fill_transition')}
-          ${this._renderAnimToggle('shimmer', 'anim_shimmer')}
-          ${this._renderAnimToggle('droplets', 'anim_droplets')}
-          ${this._renderAnimToggle('particles', 'anim_particles')}
-          ${this._renderAnimToggle('convection', 'anim_convection')}
-          ${this._renderAnimToggle('caustics', 'anim_caustics')}
-          ${this._renderAnimToggle('breathing', 'anim_breathing')}
-          ${this._renderAnimToggle('sloshing', 'anim_sloshing')}
-          ${this._renderAnimToggle('electrolysis', 'anim_electrolysis')}
-          ${this._renderAnimToggle('gradient_wave', 'anim_gradient_wave')}
+          ${this._renderAnimToggle('liquid_movement', 'anim_liquid')}
         </section>
 
         <section class="section">
@@ -513,20 +440,7 @@ class BeautifulBatteryEditor extends LitElement {
     this._config = {
       ...this._config,
       animations: { ...this._config.animations, [key]: value },
-      show_particles: this._config.animations.particles,
     };
-    if (key === 'particles') {
-      this._config.show_particles = value;
-    }
-    this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
-  }
-
-  private _setAllAnimations(value: boolean) {
-    const animations = {} as AnimationConfig;
-    for (const key of Object.keys(DEFAULT_ANIMATIONS) as Array<keyof AnimationConfig>) {
-      animations[key] = value;
-    }
-    this._config = { ...this._config, animations, show_particles: value };
     this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: this._config }, bubbles: true, composed: true }));
   }
 }

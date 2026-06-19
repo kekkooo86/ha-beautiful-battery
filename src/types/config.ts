@@ -7,18 +7,7 @@ export interface TapAction {
 
 export interface AnimationConfig {
   float: boolean;
-  tilt_3d: boolean;
-  wave: boolean;
-  fill_transition: boolean;
-  shimmer: boolean;
-  droplets: boolean;
-  particles: boolean;
-  convection: boolean;
-  caustics: boolean;
-  breathing: boolean;
-  sloshing: boolean;
-  electrolysis: boolean;
-  gradient_wave: boolean;
+  liquid_movement: boolean;
 }
 
 export interface BatteryConfig {
@@ -29,7 +18,6 @@ export interface BatteryConfig {
   show_voltage: boolean;
   show_power: boolean;
   show_status: boolean;
-  show_particles: boolean;
   animations: AnimationConfig;
   charge_colors: {
     low: string;
