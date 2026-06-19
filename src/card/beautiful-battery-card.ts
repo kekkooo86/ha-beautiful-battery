@@ -55,10 +55,10 @@ function lerpColor(a: string, b: string, t: number): string {
 }
 
 function chargeColor(pct: number, colors: BatteryConfig['charge_colors']): string {
-  if (pct < 25) return lerpColor(colors.low, colors.mid, pct / 25);
-  if (pct < 50) return lerpColor(colors.mid, colors.high, (pct - 25) / 25);
-  if (pct < 75) return lerpColor(colors.high, colors.full, (pct - 50) / 25);
-  return colors.full;
+  if (pct < 25) return colors.low;
+  if (pct < 50) return lerpColor(colors.low, colors.mid, (pct - 25) / 25);
+  if (pct < 75) return lerpColor(colors.mid, colors.high, (pct - 50) / 25);
+  return lerpColor(colors.high, colors.full, (pct - 75) / 25);
 }
 
 @customElement('beautiful-battery')
