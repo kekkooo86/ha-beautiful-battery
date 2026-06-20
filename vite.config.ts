@@ -3,6 +3,8 @@ import resolve from '@rollup/plugin-node-resolve';
 
 export default defineConfig({
   plugins: [resolve()],
+  server: { cors: true },
+  preview: { cors: true },
   build: {
     rollupOptions: {
       input: 'src/index.ts',

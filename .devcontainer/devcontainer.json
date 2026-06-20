@@ -1,0 +1,15 @@
+{
+  "image": "ghcr.io/custom-cards/custom-card-devcontainer:latest",
+  "forwardPorts": [8123],
+  "postCreateCommand": "container",
+  "remoteUser": "root",
+  "mounts": [
+    "source=ha-beautiful-battery-config,target=/config,type=volume",
+    "source=/home/kekko/WebstormProjects/ha-beautiful-battery,target=/config/www/workspace,type=bind,consistency=cached"
+  ],
+  "containerEnv": {
+    "HASS_USERNAME": "dev",
+    "HASS_PASSWORD": "dev",
+    "LOVELACE_REMOTE_FILES": "http://localhost:3000/beautiful-battery.js"
+  }
+}

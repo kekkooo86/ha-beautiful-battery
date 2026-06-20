@@ -6,7 +6,8 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
-    "dev:serve": "vite --host",
+    "dev:serve": "vite dev.html --host",
+    "dev:remote": "vite build --watch & vite preview --port 3000 --host 0.0.0.0",
     "typecheck": "tsc --noEmit"
   },
   "license": "MIT",
