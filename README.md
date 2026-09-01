@@ -28,11 +28,12 @@ A 3D liquid glass battery card for Home Assistant with realistic liquid fill, gl
 ### HACS (Recommended)
 
 1. Open HACS in Home Assistant
-2. Go to **Integrations** → **Custom repositories**
-3. Add the URL: `https://github.com/kekkooo86/ha-beautiful-battery`
-4. Select **Lovelace Dashboard** as category
-5. Click **Install**
-6. Add the card to your dashboard using the raw editor
+2. Go to **Frontend**
+3. Search for **Beautiful Battery**
+4. Click **Install**
+5. Add the card to your dashboard using the raw editor
+
+> Note: Beautiful Battery is part of the [HACS default catalog](https://github.com/hacs/default), so no custom repository setup is required.
 
 ### Manual
 
